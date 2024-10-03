@@ -9,9 +9,9 @@ import demo from '../assets/images/demo.png';
 export default function App() {
    
   return (
-   <SafeAreaView className="bg-primary h-full">       
+   <SafeAreaView className="bg-primary h-full py-12">       
         <ScrollView contentContainerStyle={{height:"100%"}}>
-            <View className="w-full justify-center items-center min-h-[85vh] px-4">
+            <View className="w-full justify-center items-center min-h-[85vh] px-2">
                 <Image source={logo} className="w-[190px] h-[84px]" resizeMode='contain'/>
                 <Image source={demo} className="w-[200px] h-[300px] rounded-xl my-12"/> 
                 <View className="relative mt-5">
@@ -21,7 +21,7 @@ export default function App() {
                     </Text>
                     {/* <Image source={images.path} className="w-[136px] h-[15px] absolute -bottom-2 -right-8" resizeMode='contain'/>                     */}
                 </View>
-                <CustomButton title="Continue with Email" handlePress={()=>router.push('/sign-in')} containerStyles="w-full mt-7"/>
+                <CustomButton title="Continue with Email" handlePress={()=>router.push('/sign-in')} containerStyles="w-[80%] mt-7"/>
             </View>
         </ScrollView>
         <StatusBar backgroundColor='#161622' style='light' />
