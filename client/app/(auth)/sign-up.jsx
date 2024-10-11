@@ -4,6 +4,7 @@ import FormField from '../../components/FormField'
 import { Link } from 'expo-router'
 import * as ImagePicker from 'expo-image-picker'
 import { RadioButton } from 'react-native-paper';
+import api from '../../api/api'
 
 const SignUp = () => {
   const [step, setStep] = React.useState(1)
@@ -57,7 +58,7 @@ const SignUp = () => {
   const files = form.thumbnail ? [form.thumbnail] : []
   const finalImage =  handleConvert(files[0])
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     const submitForm = {
       name: form.name,
       email: form.email,
@@ -70,7 +71,9 @@ const SignUp = () => {
       id_proof: form.thumbnailBase64,
     }
 
-    if (!submitForm.name || !submitForm.email || !submitForm.phone || !submitForm.password || !submitForm.age || !submitForm.skills || !submitForm.location || !submitForm.is_student || !submitForm.id_proof) {
+    // console.log(form.name, 'form.name', form.email, 'form.email', form.phone, 'form.phone', form.password, 'form.password', form.age, 'form.age', form.skills, 'form.skills', form.location, 'form.location', selectedValue, form.thumbnailBase64, 'form.thumbnailBase64')
+
+    if (!submitForm.name || !submitForm.email || !submitForm.phone || !submitForm.password || !submitForm.age || !submitForm.skills || !submitForm.location || !submitForm.id_proof) {
       alert('All fields are required')
       return
     }
@@ -119,6 +122,18 @@ const SignUp = () => {
     if(!form.thumbnailBase64){
       alert('Please upload your ID proof')
       return
+    }
+
+    // console.log(submitForm)
+
+    try{
+      const response = await api.post('/users/signup', submitForm)
+      // console.log(api)
+      console.log(response)
+
+    }
+    catch(e){
+      console.log(e)
     }
 
   

@@ -7,11 +7,11 @@ class UserCreate(BaseModel):
     phone: str
     password: str
     age: int
-    nationality: str
+    # nationality: str
     is_student: bool
     skills: List[str]
     id_proof: str
-    company_name: Optional[str] = None
+    # company_name: Optional[str] = None
     location: Optional[str] = None
 
 class UserResponse(BaseModel):
@@ -20,13 +20,13 @@ class UserResponse(BaseModel):
     email: EmailStr
     phone: str
     age: int
-    nationality: str
+    # nationality: str
     is_student: bool
     skills: List[str]
     id_proof: str
-    company_name: Optional[str] = None
+    # company_name: Optional[str] = None
     location: Optional[str] = None
-    isEmployee: bool
+    # isEmployee: bool
 
     class Config:
         orm_mode = True
