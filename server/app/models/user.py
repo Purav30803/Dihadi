@@ -8,10 +8,10 @@ class User(BaseModel):
     phone: str
     password: str
     age: int
-    nationality: str
+    # nationality: str
     is_student: bool
     skills: List[str]
     id_proof: str
-    company_name: Optional[str] = None
+    # company_name: Optional[str] = None
     location: Optional[str] = None
-    isEmployee: bool
+    # isEmployee: bool

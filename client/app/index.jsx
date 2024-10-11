@@ -9,7 +9,7 @@ import demo from '../assets/images/demo.png';
 export default function App() {
    
   return (
-   <SafeAreaView className="bg-primary h-full py-12">       
+   <SafeAreaView className="bg-primary h-full">       
         <ScrollView contentContainerStyle={{height:"100%"}}>
             <View className="w-full justify-center items-center min-h-[85vh] px-2">
                 <Image source={logo} className="w-[190px] h-[84px]" resizeMode='contain'/>

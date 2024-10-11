@@ -28,11 +28,11 @@ async def create_user(user: UserCreate):
         email=created_user["email"],
         phone=created_user["phone"],
         age=created_user["age"],
-        nationality=created_user["nationality"],
+        # nationality=created_user["nationality"],
         is_student=created_user["is_student"],
         skills=created_user["skills"],
         id_proof=created_user["id_proof"],
-        company_name=created_user["company_name"],
+        # company_name=created_user["company_name"],
         location=created_user["location"],
-        isEmployee=created_user.get("isEmployee", False)  # Default isEmployee to False if missing
+        # isEmployee=created_user.get("isEmployee", False)  # Default isEmployee to False if missing
     )
