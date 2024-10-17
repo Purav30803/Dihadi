@@ -2,7 +2,7 @@
 import axios from 'axios';
 
 const api = axios.create({
-    baseURL: process.env.REACT_APP_BACKEND_URI,
+    baseURL: "https://dihadi-backend-purav308032814-hq7ha3hi.leapcell.dev/api",
     headers: {
         'Content-Type': 'application/json',
     },
