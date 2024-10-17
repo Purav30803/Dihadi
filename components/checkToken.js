@@ -3,7 +3,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 const checkToken = async () => {
     const token = await AsyncStorage.getItem('token');
     if (token) {
-        return token;
+        return JSON.stringify(token);
     } else {
         return false;
     }
