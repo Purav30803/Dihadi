@@ -6,8 +6,17 @@ import { Redirect,router } from 'expo-router';
 import CustomButton from '../components/customButton';
 import logo from '../assets/images/logo1.png';
 import demo from '../assets/images/demo.png';
+import checkToken from '../components/checkToken';
+import { useEffect } from 'react';
 export default function App() {
-   
+    const token = checkToken(); 
+    if(token){
+       return <Redirect href="/home"/>
+    }
+    else{
+        router.push('/sign-in')
+    }
+
   return (
    <SafeAreaView className="bg-primary h-full">       
         <ScrollView contentContainerStyle={{height:"100%"}}>
