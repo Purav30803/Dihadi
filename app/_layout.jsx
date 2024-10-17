@@ -3,7 +3,7 @@ import { Slot, SplashScreen, Stack } from 'expo-router'
 import React, { useEffect } from 'react'
 import { useFonts } from 'expo-font'
 import { StatusBar } from 'expo-status-bar';
-
+import { AlertNotificationRoot } from 'react-native-alert-notification';
 SplashScreen.preventAutoHideAsync();
 
 const RootLayout = () => {
@@ -26,6 +26,7 @@ const RootLayout = () => {
     }, [fontsLoaded, error])
     if (!fontsLoaded && !error) return null
     return (
+        <AlertNotificationRoot>
         <Stack>
 
             <Stack.Screen name='index' options={{ headerShown: false }} />
@@ -33,6 +34,7 @@ const RootLayout = () => {
             <Stack.Screen name='(auth)' options={{ headerShown: false }} />
 
         </Stack>
+        </AlertNotificationRoot>
     )
 }
 

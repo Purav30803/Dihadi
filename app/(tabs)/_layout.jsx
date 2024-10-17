@@ -2,11 +2,13 @@ import { View, Text } from 'react-native'
 import React from 'react'
 import {Tabs,Redirext} from 'expo-router';
 import {Image} from 'react-native';
+import Icon from 'react-native-vector-icons/Octicons';
 
-const TabIcon = ({color,name,focused})=>(
+const TabIcon = ({color,name,focused,title})=>(
   <View className="items-center justify-center gap-2">
     {/* <Image source={icon} resizeMode='contain' tintColor={color} className="w-4 h-4"/> */}
-    <Text className={`text-xs ${focused?'font-psemibold':'font-pregular'}`} style={{color:color}}>{name}</Text>
+    <Icon name={name} size={20} color={color}/>
+    <Text className={`text-xs ${focused?'font-psemibold':'font-pregular'}`} style={{color:color}}>{title}</Text>
   </View>
 )
 
@@ -28,14 +30,14 @@ const TabsLayout = () => {
         title:'Home',
         headerShown:false,
         tabBarIcon:({color,focused})=>(
-            <TabIcon color={color} focused={focused} name='Home'/>
+            <TabIcon color={color} focused={focused} name='home' title="Home"/>
         )
     }}/>
     <Tabs.Screen name='profile' options={{
         title:'Profile',
         headerShown:false,
         tabBarIcon:({color,focused})=>(
-            <TabIcon color={color} focused={focused} name='Profile'/>
+            <TabIcon color={color} focused={focused} name='person' title="Profile"/>
         )
     }}/>
     
