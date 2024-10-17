@@ -71,7 +71,7 @@ const SignUp = () => {
       id_proof: form.thumbnailBase64,
     }
 
-    // console.log(form.name, 'form.name', form.email, 'form.email', form.phone, 'form.phone', form.password, 'form.password', form.age, 'form.age', form.skills, 'form.skills', form.location, 'form.location', selectedValue, form.thumbnailBase64, 'form.thumbnailBase64')
+    console.log(form.name, 'form.name', form.email, 'form.email', form.phone, 'form.phone', form.password, 'form.password', form.age, 'form.age', form.skills, 'form.skills', form.location, 'form.location', selectedValue)
 
     if (!submitForm.name || !submitForm.email || !submitForm.phone || !submitForm.password || !submitForm.age || !submitForm.skills || !submitForm.location || !submitForm.id_proof) {
       alert('All fields are required')
@@ -127,9 +127,12 @@ const SignUp = () => {
     // console.log(submitForm)
 
     try{
-      const response = await api.post('/users/signup', submitForm)
+      const response = await api.post('/users/signup', JSON.stringify(submitForm))
       // console.log(api)
-      console.log(response)
+      console.log(response.data)
+
+      // chnage response to res
+      
 
     }
     catch(e){
