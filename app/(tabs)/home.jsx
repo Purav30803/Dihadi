@@ -4,7 +4,6 @@ import { SafeAreaView } from 'react-native-safe-area-context'
 import Interceptor from '../../components/Interseptor'
 const Home = () => {
 
-
   useEffect(() => {
     Interceptor();
   },[])

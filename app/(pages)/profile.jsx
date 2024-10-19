@@ -7,6 +7,7 @@ import { router } from 'expo-router';
 import { TouchableOpacity } from 'react-native';
 import { RefreshControl } from 'react-native'
 import Loader from '../../components/Loader';
+import TitleHeader from '../../components/header';
 
 
 const Profile = () => {
@@ -47,12 +48,6 @@ const Profile = () => {
     setRefreshing(false)
   }
 
-  const logout = async () => {
-    await AsyncStorage.removeItem('token');
-    setToken(null)
-    router.push('/sign-in')
-  }
-
   // Intersep
   useEffect(() => {
     getToken();
@@ -63,11 +58,10 @@ const Profile = () => {
     <SafeAreaView className="flex-1 bg-gray-50">
       <ScrollView contentContainerStyle="p-6 flex items-center">
         {/* Profile Heading */}
-        <Text className="pt-12 px-12 text-4xl font-pmedium text-gray-900">Profile</Text>
-
+<TitleHeader name="Profile" />
         {/* User Card */}
-       {/* {loading?<Loader />:  */}
-       <ScrollView className="w-full rounded-lg p-12"  refreshControl={
+       {loading?<Loader />: 
+       <ScrollView className="w-full rounded-lg pb-12 px-12"  refreshControl={
           <RefreshControl
             refreshing={refreshing}
             onRefresh={onRefresh}
@@ -92,11 +86,9 @@ const Profile = () => {
           <Text className="text-lg font-pbold text-gray-700 mb-2">Student</Text>
           <Text className="text-base font-pregular text-gray-900">{user?.is_student ? 'Yes' : 'No'}</Text>
 
-          <TouchableOpacity onPress={logout}>
-            <Text>Logout</Text>
-          </TouchableOpacity>
+         
         </ScrollView>
-        {/* } */}
+         } 
       </ScrollView>
     </SafeAreaView>
   )

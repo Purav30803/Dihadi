@@ -17,13 +17,13 @@ const TabsLayout = () => {
    <>
    <Tabs screenOptions={{
     tabBarShowLabel:false,
-    tabBarActiveTintColor:"#ffa001",
-    tabBarInactiveTintColor:"#cdcde0",
+    tabBarActiveTintColor:"#000",
+    tabBarInactiveTintColor:"#4a4a4a",
     tabBarStyle:{
-        backgroundColor:"#161622",
-        borderTopWidth:1,
-        borderTopColor:"232533",
-        height:64
+        backgroundColor:"#fff",
+        borderTopWidth:2,
+        borderTopColor:"#eee",
+        height:74
     }
    }}>
     <Tabs.Screen name='home' options={{
@@ -33,11 +33,11 @@ const TabsLayout = () => {
             <TabIcon color={color} focused={focused} name='home' title="Home"/>
         )
     }}/>
-    <Tabs.Screen name='profile' options={{
-        title:'Profile',
+    <Tabs.Screen name='settings' options={{
+        title:'Settings',
         headerShown:false,
         tabBarIcon:({color,focused})=>(
-            <TabIcon color={color} focused={focused} name='person' title="Profile"/>
+            <TabIcon color={color} focused={focused} name='gear' title="Settings"/>
         )
     }}/>
     

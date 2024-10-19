@@ -2,7 +2,7 @@
 import axios from 'axios';
 
 const api = axios.create({
-    baseURL: "https://893d-2001-4958-2af8-d401-810d-b68c-a45d-2825.ngrok-free.app/api",
+    baseURL: "https://dihadi-backend.onrender.com/api",
     headers: {
         'Content-Type': 'application/json',
     },

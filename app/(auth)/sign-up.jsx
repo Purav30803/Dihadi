@@ -317,19 +317,19 @@ const SignUp = () => {
               </TouchableOpacity>
             </View>
           }
-          <View className="flex flex-row justify-between pt-4">
-            {step !== 1 && <TouchableOpacity onPress={() => setStep(step - 1)} className="bg-blue-500 py-2 px-8 rounded-lg" >
-              <Text className="text-white text-center text-[14px] font-pmedium">Back</Text>
+          <View className="flex flex-row justify-between pt-4 items-center">
+            {step !== 1 && <TouchableOpacity onPress={() => setStep(step - 1)} className="border py-2 px-8 rounded-lg" >
+              <Text className="text-black text-[14px] font-pmedium">Back</Text>
             </TouchableOpacity>}
-            {step !== 4 && <TouchableOpacity onPress={() => setStep(step + 1)} className="bg-primary px-8 py-2 rounded-lg" >
-              <Text className="text-white text-center text-[14px] font-pmedium">Next</Text>
+            {step !== 4 && <TouchableOpacity onPress={() => setStep(step + 1)} className="bg-blue-500 px-8 py-2 rounded-lg" >
+              <Text className="text-white text-[14px] font-pmedium">Next</Text>
             </TouchableOpacity>}
 
           </View>
-          <View className="flex-row mt-12">
-            <Text className="text-black-200 text-sm">Already have an account ?</Text>
+          <View className="flex-row mt-12 ">
+            <Text className="text-black-200 text-sm font-pregular">Already have an account ?</Text>
             <TouchableOpacity>
-              <Link className="text-secondary-200 text-sm ml-2 underline" href="/sign-in">Login</Link>
+              <Link className="text-secondary-200 text-sm ml-2 underline font-psemibold" href="/sign-in">Login</Link>
             </TouchableOpacity>
           </View>
         </View>

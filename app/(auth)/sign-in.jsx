@@ -75,11 +75,11 @@ const SignIn = () => {
           <TouchableOpacity className="bg-secondary py-3 rounded-lg" onPress={handleSubmit}>
             <Text className="text-white text-center text-lg font-pbold">Login</Text>
           </TouchableOpacity>
-          <Link className="text-secondary-200 underline text-sm" href="/">Forgot Password?</Link>
+          <Link className="text-secondary-200 underline text-sm font-psemibold" href="/">Forgot Password?</Link>
           <View className="flex-row mt-12">
-            <Text className="text-black-200 text-sm">Don't have an account?</Text>
+            <Text className="text-black-200 text-sm font-pregular">Don't have an account?</Text>
             <TouchableOpacity>
-              <Link className="text-secondary-200 text-sm ml-2 underline" href="/sign-up">Sign Up</Link>
+              <Link className="text-secondary font-psemibold text-sm ml-2 underline" href="/sign-up">Sign Up</Link>
             </TouchableOpacity>
           </View>
         </View>
