@@ -15,9 +15,11 @@ const SignIn = () => {
   })
 
   const token = checkToken(); 
-  if(token){
-     return <Redirect href="/home"/>
+  console.log(token)
+  if(token?.length>1){
+     router.push('/home')
   }
+
  
   const handleSubmit = async () => {
     console.log(form)

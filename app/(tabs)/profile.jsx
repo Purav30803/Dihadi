@@ -1,11 +1,18 @@
-import { ScrollView, Text, View } from 'react-native'
+import { ActivityIndicator, ScrollView, Text, View } from 'react-native'
 import React, { useEffect, useState } from 'react'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import api from '../../api/api'
+import { router } from 'expo-router';
+import { TouchableOpacity } from 'react-native';
+import { RefreshControl } from 'react-native'
+import Loader from '../../components/Loader';
+
 
 const Profile = () => {
   const [token, setToken] = useState()
+  const [loading, setLoading] = useState(false)
+  const [refreshing, setRefreshing] = useState(false)
   const [user, setUser] = useState()
 
   const getToken = async () => {
@@ -16,17 +23,37 @@ const Profile = () => {
   }
 
   const getUser = async () => {
+    setLoading(true)
     if (!token) {
       return
     }
-    const response = await api.get('/users/me', {
-      headers: {
-        Authorization: `Bearer ${token}`
-      }
-    })
-    setUser(response.data)
+    try {
+      const response = await api.get('/users/me', {
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      })
+      setUser(response.data)
+    }
+    catch (err) {
+      console.log(err.response.data)
+      setLoading(false)
+    }
+    setLoading(false)
+  }
+  const onRefresh = async () => {
+    setRefreshing(true)
+    await getUser()
+    setRefreshing(false)
   }
 
+  const logout = async () => {
+    await AsyncStorage.removeItem('token');
+    setToken(null)
+    router.push('/sign-in')
+  }
+
+  // Intersep
   useEffect(() => {
     getToken();
     getUser();
@@ -36,10 +63,17 @@ const Profile = () => {
     <SafeAreaView className="flex-1 bg-gray-50">
       <ScrollView contentContainerStyle="p-6 flex items-center">
         {/* Profile Heading */}
-        <Text className="p-12 text-4xl font-pmedium text-gray-900">Profile</Text>
+        <Text className="pt-12 px-12 text-4xl font-pmedium text-gray-900">Profile</Text>
 
         {/* User Card */}
-        <View className="w-full rounded-lg p-12">
+       {/* {loading?<Loader />:  */}
+       <ScrollView className="w-full rounded-lg p-12"  refreshControl={
+          <RefreshControl
+            refreshing={refreshing}
+            onRefresh={onRefresh}
+          />
+        }
+       > 
           <Text className="text-lg font-pbold text-gray-700 mb-2">Name</Text>
           <Text className="text-base font-pregular text-gray-900 mb-6">{user?.name || 'N/A'}</Text>
 
@@ -57,7 +91,12 @@ const Profile = () => {
 
           <Text className="text-lg font-pbold text-gray-700 mb-2">Student</Text>
           <Text className="text-base font-pregular text-gray-900">{user?.is_student ? 'Yes' : 'No'}</Text>
-        </View>
+
+          <TouchableOpacity onPress={logout}>
+            <Text>Logout</Text>
+          </TouchableOpacity>
+        </ScrollView>
+        {/* } */}
       </ScrollView>
     </SafeAreaView>
   )
