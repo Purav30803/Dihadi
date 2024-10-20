@@ -18,7 +18,7 @@ const Settings = () => {
             <ScrollView>
                 <View className="flex-1 bg-gray-50 gap-y-4">
                   <MenuItem title="Profile" icon="person" redirect="/profile"/>
-                   <MenuItem title="Document" icon="file" />
+                   <MenuItem title="Document" icon="file" redirect="/document" />
                    <MenuItem title="Logout" icon="sign-out" redirect="logout" />
                 
                 </View>
@@ -37,25 +37,24 @@ const MenuItem = ({ icon, title,redirect }) => {
       }
     const redirectTo = async (path) => {
         
-        if(path && path.includes('profile')){
-            router.push(path)
-            return
-        }
-        else if(path && path.includes('logout')){
+       
+         if(path && path.includes('logout')){
             logout();
         }
         else{
-            return;
+            router.push(path)
+            return
         }
+       
     }
     return (
-        <View className="flex-row py-6 w-full justify-between px-12 items-center" onTouchStart={()=>redirectTo(redirect)}>
+        <View className="flex-row py-4 w-full justify-between px-12 items-center" onTouchStart={()=>redirectTo(redirect)}>
         <View className="flex-row gap-x-4">
-            <Icon name={icon} size={30} color={`${title==="Logout"?"red":"#000"}`}/>
-            <Text className={`${title === 'Logout' ? "text-red-500":"text-gray-900"} text-2xl font-pmedium`}>{title}</Text>
+            <Icon name={icon} size={25} color={`${title==="Logout"?"red":"#000"}`}/>
+            <Text className={`${title === 'Logout' ? "text-red-500":"text-gray-900"} text-xl font-pmedium`}>{title}</Text>
         </View>
         {title!=='Logout' && <View>
-            <Icon name="chevron-right" size={30} color="#000" />
+            <Icon name="chevron-right" size={25} color="#000" />
         </View>}
     </View>
     )

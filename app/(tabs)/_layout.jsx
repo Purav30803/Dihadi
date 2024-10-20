@@ -5,9 +5,12 @@ import {Image} from 'react-native';
 import Icon from 'react-native-vector-icons/Octicons';
 
 const TabIcon = ({color,name,focused,title})=>(
-  <View className="items-center justify-center gap-2">
+  <View className="items-center justify-center gap-1">
     {/* <Image source={icon} resizeMode='contain' tintColor={color} className="w-4 h-4"/> */}
-    <Icon name={name} size={20} color={color}/>
+    <View className={`${focused && 'rounded-full bg-[#00000019]'} px-6 py-1`}>
+
+    <Icon name={name} size={20} color={color} />
+    </View>
     <Text className={`text-xs ${focused?'font-psemibold':'font-pregular'}`} style={{color:color}}>{title}</Text>
   </View>
 )

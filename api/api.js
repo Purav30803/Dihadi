@@ -2,7 +2,7 @@
 import axios from 'axios';
 
 const api = axios.create({
-    baseURL: "https://dihadi-backend.onrender.com/api",
+    baseURL: "https://eighty-buttons-shake.loca.lt/api",
     headers: {
         'Content-Type': 'application/json',
     },

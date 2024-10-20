@@ -10,6 +10,9 @@ const PageLAyout = () => {
         <Stack.Screen name="profile" options={{
           headerShown: false
         }}/>
+        <Stack.Screen name="document" options={{
+          headerShown: false
+        }}/>
       
       </Stack>
 
