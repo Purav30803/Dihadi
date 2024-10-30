@@ -12,7 +12,7 @@ const Settings = () => {
         <SafeAreaView className="flex-1 bg-gray-50">
             <TitleHeader name="Settings" />
             
-            <ScrollView className="flex-1 px-4 pt-4">
+            <ScrollView className="flex-1 px-4">
                 <View className="bg-white rounded-2xl shadow-sm mb-6">
                     {/* Account Section */}
                     <View className="px-4 py-3 border-b border-gray-100">

@@ -2,7 +2,7 @@
 import axios from 'axios';
 
 const api = axios.create({
-    baseURL: "https://chubby-lands-rescue.loca.lt/api",
+    baseURL: "https://dihadi-backend.onrender.com/api",
     headers: {
         'Content-Type': 'application/json',
     },

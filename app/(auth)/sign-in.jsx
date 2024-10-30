@@ -7,8 +7,7 @@ import api from '../../api/api'
 import { Toast, ALERT_TYPE } from 'react-native-alert-notification'
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import checkToken from '../../components/checkToken'
-import Otp from './Otp'
-import OtpVerfication from './otpVerification'
+
 const SignIn = () => {
   const [form, setForm] = React.useState({
     email: '',
