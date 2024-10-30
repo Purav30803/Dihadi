@@ -13,9 +13,7 @@ export default function App() {
     if(token){
        return <Redirect href="/home"/>
     }
-    else{
-        router.push('/sign-in')
-    }
+   
 
   return (
    <SafeAreaView className="bg-primary h-full">       

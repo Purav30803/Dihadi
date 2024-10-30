@@ -3,19 +3,17 @@ import React from 'react'
 import { Stack } from 'expo-router'
 import { StatusBar } from 'expo-status-bar'
 
-const AuthLayout = () => {
+const PageLAyout = () => {
   return (
    <>
       <Stack>
-        <Stack.Screen name="sign-in" options={{
+        <Stack.Screen name="profile" options={{
           headerShown: false
         }}/>
-        <Stack.Screen name="sign-up" options={{
+        <Stack.Screen name="document" options={{
           headerShown: false
         }}/>
-        <Stack.Screen name="otpVerification" options={{
-          headerShown: false
-        }}/>
+      
       </Stack>
 
       <StatusBar style='dark' backgroundColor='#161622' />
@@ -23,4 +21,4 @@ const AuthLayout = () => {
   )
 }
 
-export default AuthLayout
+export default PageLAyout

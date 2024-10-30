@@ -2,7 +2,7 @@
 import axios from 'axios';
 
 const api = axios.create({
-    baseURL: "https://4f87-2001-4958-2b30-ab01-e4db-a269-c2a-1fd4.ngrok-free.app/api",
+    baseURL: "https://chubby-lands-rescue.loca.lt/api",
     headers: {
         'Content-Type': 'application/json',
     },

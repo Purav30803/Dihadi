@@ -7,7 +7,8 @@ import api from '../../api/api'
 import { Toast, ALERT_TYPE } from 'react-native-alert-notification'
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import checkToken from '../../components/checkToken'
-
+import Otp from './Otp'
+import OtpVerfication from './otpVerification'
 const SignIn = () => {
   const [form, setForm] = React.useState({
     email: '',
@@ -15,9 +16,11 @@ const SignIn = () => {
   })
 
   const token = checkToken(); 
-  if(token){
-     return <Redirect href="/home"/>
+  console.log(token)
+  if(token?.length>1){
+     router.push('/home')
   }
+
  
   const handleSubmit = async () => {
     console.log(form)
@@ -42,12 +45,21 @@ const SignIn = () => {
     try {
 
       const response = await api.post('/users/login', form)
-      console.log(response.data)
-
+      console.log(response?.data?.status_code)
+      if(response?.data?.status_code == 400){
+        // Alert.alert('Account not verified');
+        Toast.show({
+          type: ALERT_TYPE.DANGER,
+          title: 'Error',
+          textBody: response?.data?.message,
+        })
+        router.push('/otpVerification')
+        await AsyncStorage.setItem('email', form.email)
+      }
       if (response?.data?.token) {
         router.push('/home')
-        await AsyncStorage.setItem('token', JSON.stringify(response.data.token))
-        console.log('token', response.data.token)
+        await AsyncStorage.setItem('token', JSON.stringify(response?.data?.token))
+        console.log('token', response?.data?.token)
       }
 
     }
@@ -65,7 +77,7 @@ const SignIn = () => {
   return (
     <View className="p-6 flex items-center justify-center w-full min-h-screen">
       <View className="w-full px-4">
-
+      {/* <OtpVerfication/> */}
         <Text className="pb-8 pt-12 text-3xl font-pbold">Sign In</Text>
         <View className='gap-y-4 w-full '>
           <FormField title="Email" placeholder="Email" handleChangeText={(e) => setForm({ ...form, email: e })} />
@@ -73,11 +85,11 @@ const SignIn = () => {
           <TouchableOpacity className="bg-secondary py-3 rounded-lg" onPress={handleSubmit}>
             <Text className="text-white text-center text-lg font-pbold">Login</Text>
           </TouchableOpacity>
-          <Link className="text-secondary-200 underline text-sm" href="/">Forgot Password?</Link>
+          <Link className="text-secondary-200 underline text-sm font-psemibold" href="/">Forgot Password?</Link>
           <View className="flex-row mt-12">
-            <Text className="text-black-200 text-sm">Don't have an account?</Text>
+            <Text className="text-black-200 text-sm font-pregular">Don't have an account?</Text>
             <TouchableOpacity>
-              <Link className="text-secondary-200 text-sm ml-2 underline" href="/sign-up">Sign Up</Link>
+              <Link className="text-secondary font-psemibold text-sm ml-2 underline" href="/sign-up">Sign Up</Link>
             </TouchableOpacity>
           </View>
         </View>
