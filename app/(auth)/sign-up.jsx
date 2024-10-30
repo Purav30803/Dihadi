@@ -7,6 +7,7 @@ import api from '../../api/api'
 import { router } from 'expo-router'
 import { Toast, ALERT_TYPE, Dialog } from 'react-native-alert-notification';
 import { RadioButton } from 'react-native-paper'
+import AsyncStorage from '@react-native-async-storage/async-storage'
 
 
 const SignUp = () => {
@@ -199,7 +200,10 @@ const SignUp = () => {
           textBody: 'Account Created Successfully',
         })
 
-        router.push('/sign-in')
+        // set email in local storage
+        await AsyncStorage.setItem('email', form.email)
+
+        router.push(`/otpVerification?email=${form.email}`)
       }
       else {
         Toast.show({
