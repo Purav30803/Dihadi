@@ -12,7 +12,7 @@ const FormField = ({ title, value, placeholder, handleChangeText, otherStyles, .
             <View className="flex-row px-4 mt-4 py-2 h-14 justify-between items-center flex bg-white border border-gray-200 rounded-lg focus:border-blue-300 border-2">
                 
                 <TextInput
-                    keyboardType={title === 'Email' ? 'email-address' : title === "Phone" ? 'phone-pad' : (title === "Age" || title === "OTP")? 'numeric': 'default'}
+                    keyboardType={title === 'Email' ? 'email-address' : title === "Phone" ? 'phone-pad' : (title === "Age" || title === "OTP" )? 'numeric': 'default'}
                     autoCompleteType={title === 'Email' ? 'email' : title === 'Password' || title === 'Retype Password' ? 'password' : 'off'}
                     placeholder={placeholder}
                     value={value}
