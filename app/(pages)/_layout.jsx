@@ -14,6 +14,10 @@ const PageLAyout = () => {
           headerShown: false
         }}/>
       
+        <Stack.Screen name="jobPost" options={{
+          headerShown: false
+        }}/>
+      
       </Stack>
 
       <StatusBar style='dark' backgroundColor='#161622' />

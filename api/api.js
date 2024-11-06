@@ -1,31 +1,20 @@
-
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
 
+// Create the axios instance without Authorization header initially
 const api = axios.create({
-    baseURL: "https://dihadi-backend.onrender.com/api",
+    baseURL: "https://tangy-owls-deny.loca.lt/api",
     headers: {
         'Content-Type': 'application/json',
     },
 });
 
-
-
-// Set Authorization header on initial load
-// let token = localStorage.getItem('login');
-
-// if (token) {
-//     token=JSON.parse(token);
-//     api.defaults.headers.common['Authorization'] = `Bearer ${token?.token}`;
-// } else {
-//     api.defaults.headers.common['Authorization'] = null;
-// }
-
+// Add a request interceptor to attach the token from AsyncStorage
 // api.interceptors.request.use(
-//     (config) => {
-//         let token = localStorage.getItem('login');
+//     async (config) => {
+//         const token = await AsyncStorage.getItem('token');
 //         if (token) {
-//             token=JSON.parse(token);
-//             config.headers['Authorization'] = `Bearer ${token?.token}`;
+//             config.headers['Authorization'] = `Bearer ${token}`;
 //         }
 //         return config;
 //     },
