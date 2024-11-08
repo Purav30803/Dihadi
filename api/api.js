@@ -3,7 +3,7 @@ import axios from 'axios';
 
 // Create the axios instance without Authorization header initially
 const api = axios.create({
-    baseURL: "https://petite-rivers-warn.loca.lt/api",
+    baseURL: "https://dihadi-backend.onrender.com/api",
     headers: {
         'Content-Type': 'application/json',
     },
