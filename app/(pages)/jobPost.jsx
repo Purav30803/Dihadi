@@ -52,7 +52,21 @@ const JobPosting = () => {
     };
 
     const handleSubmit = async () => {
+       
+        if(form?.jobTitle?.length<1 || form?.jobDescription?.length<1 || form?.salary?.length<1 || form?.location?.length<1 || form?.skillsRequired?.length<1){{
+            Toast.show({
+                type: ALERT_TYPE.DANGER,
+                title: 'Error',
+                textBody: 'All fields are required',
+              })
+              return
+        }
+        }
+
         setLoading(true)
+
+       
+
         try {
             const response = await api.post('/job_post/create', {
                 job_title: form.jobTitle,

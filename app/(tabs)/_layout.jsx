@@ -36,6 +36,13 @@ const TabsLayout = () => {
             <TabIcon color={color} focused={focused} name='home' title="Home"/>
         )
     }}/>
+       <Tabs.Screen name='myjobs' options={{
+        title:'Posted Jobs',
+        headerShown:false,
+        tabBarIcon:({color,focused})=>(
+            <TabIcon color={color} focused={focused} name='browser' title="Posted Jobs"/>
+        )
+    }}/>
     <Tabs.Screen name='settings' options={{
         title:'Settings',
         headerShown:false,
@@ -43,6 +50,7 @@ const TabsLayout = () => {
             <TabIcon color={color} focused={focused} name='gear' title="Settings"/>
         )
     }}/>
+ 
     
    </Tabs>
    </>
