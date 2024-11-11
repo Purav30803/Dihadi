@@ -1,6 +1,6 @@
 import { View, Text, ActivityIndicator, ScrollView } from 'react-native';
 import React, { useEffect, useState } from 'react';
-import { router, useLocalSearchParams } from 'expo-router';
+import { Link, router, useLocalSearchParams } from 'expo-router';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import api from '../../api/api';
 import { MaterialIcons } from '@expo/vector-icons';
@@ -99,6 +99,7 @@ const JobPosting = () => {
         return (
             <View className="flex-1 justify-center items-center">
                 <Text className="text-lg text-gray-500">Job details not available.</Text>
+                <Link to="/myJobs" className="text-blue-500">Go back</Link>
             </View>
         );
     }

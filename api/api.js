@@ -3,7 +3,7 @@ import axios from 'axios';
 
 // Create the axios instance without Authorization header initially
 const api = axios.create({
-    baseURL: "https://green-wings-draw.loca.lt/api",
+    baseURL: "https://red-chefs-fail.loca.lt/api",
     headers: {
         'Content-Type': 'application/json',
     },

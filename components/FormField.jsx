@@ -28,6 +28,13 @@ const FormField = ({ title, value, placeholder, handleChangeText, otherStyles, .
                         </TouchableOpacity>
                     )
                 }
+                {
+                    (title === 'Search') && (
+                        <TouchableOpacity>
+                            <Icon name="search" size={23} color="#000"/> 
+                        </TouchableOpacity>
+                    )
+                }
                 
             </View>
         </View>
