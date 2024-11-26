@@ -222,7 +222,7 @@ const JobPosting = () => {
 
                     {/* Submit Button */}
                     <TouchableOpacity 
-                        className="bg-secondary py-3 mx-6 rounded-lg" 
+                        className="bg-blue-700 py-3 mx-6 rounded-full" 
                         onPress={handleSubmit}
                     >
                         {loading?<ActivityIndicator size="small" color="#fff" />:<Text className="text-white text-center text-lg font-pbold">
