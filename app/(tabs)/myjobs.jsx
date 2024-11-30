@@ -80,8 +80,9 @@ const MyJobs = () => {
       <View className="mt-3 flex-row items-center">
         <Feather name="clock" size={16} color="#6B7280" />
         <Text className="text-gray-600 text-sm ml-2 font-pregular">
-          {new Date(job.shift_start).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })} - 
-          {new Date(job.shift_end).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+          {job.shift_start} 
+          {' - '}
+          {job.shift_end}
         </Text>
       </View>
 

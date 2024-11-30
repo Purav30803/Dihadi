@@ -99,7 +99,7 @@ const JobPosting = () => {
         return (
             <View className="flex-1 justify-center items-center">
                 <Text className="text-lg text-gray-500">Job details not available.</Text>
-                <Link to="/myJobs" className="text-blue-500">Go back</Link>
+                <Link href="/myJobs" className="text-blue-500">Go back</Link>
             </View>
         );
     }
@@ -126,7 +126,7 @@ const JobPosting = () => {
                     <View className="flex-row items-center mb-2">
                         <MaterialIcons name="schedule" size={20} color="#6B7280" />
                         <Text className="text-sm font-pregular text-gray-600 ml-2">
-                            {new Date(job.shift_start).toLocaleString()} - {new Date(job.shift_end).toLocaleString()}
+                            {job.shift_start} - {job.shift_end}
                         </Text>
                     </View>
                     <View className="flex-row items-center mb-2">

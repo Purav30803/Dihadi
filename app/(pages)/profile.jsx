@@ -1,58 +1,63 @@
-import { ActivityIndicator, ScrollView, Text, View, Image } from 'react-native'
-import React, { useEffect, useState } from 'react'
-import { SafeAreaView } from 'react-native-safe-area-context'
-import AsyncStorage from '@react-native-async-storage/async-storage'
-import api from '../../api/api'
-import { router } from 'expo-router'
-import { TouchableOpacity } from 'react-native'
-import { RefreshControl } from 'react-native'
-import Loader from '../../components/Loader'
-import TitleHeader from '../../components/header'
-import { MaterialIcons } from '@expo/vector-icons'
+import {
+  ActivityIndicator,
+  ScrollView,
+  Text,
+  View,
+  TouchableOpacity,
+} from 'react-native';
+import React, { useEffect, useState } from 'react';
+import { SafeAreaView } from 'react-native-safe-area-context';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import api from '../../api/api';
+import { RefreshControl } from 'react-native';
+import Loader from '../../components/Loader';
+import TitleHeader from '../../components/header';
+import { MaterialIcons } from '@expo/vector-icons';
+import { Link, useRouter } from 'expo-router';
 
 const Profile = () => {
-  const [token, setToken] = useState()
-  const [loading, setLoading] = useState(false)
-  const [refreshing, setRefreshing] = useState(false)
-  const [user, setUser] = useState()
+  const [token, setToken] = useState();
+  const [loading, setLoading] = useState(false);
+  const [refreshing, setRefreshing] = useState(false);
+  const [user, setUser] = useState();
+  const router = useRouter();
 
   const getToken = async () => {
-    const token = await AsyncStorage.getItem('token')
+    const token = await AsyncStorage.getItem('token');
     if (token) {
-      setToken(JSON.parse(token))
+      setToken(JSON.parse(token));
     }
-  }
+  };
 
   const getUser = async () => {
-    setLoading(true)
+    setLoading(true);
     if (!token) {
-      return
+      return;
     }
     try {
       const response = await api.get('/users/me', {
         headers: {
-          Authorization: `Bearer ${token}`
-        }
-      })
-      setUser(response.data)
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      setUser(response.data);
+    } catch (err) {
+      console.log(err.response.data);
+      setLoading(false);
     }
-    catch (err) {
-      console.log(err.response.data)
-      setLoading(false)
-    }
-    setLoading(false)
-  }
+    setLoading(false);
+  };
 
   const onRefresh = async () => {
-    setRefreshing(true)
-    await getUser()
-    setRefreshing(false)
-  }
+    setRefreshing(true);
+    await getUser();
+    setRefreshing(false);
+  };
 
   useEffect(() => {
-    getToken()
-    getUser()
-  }, [token])
+    getToken();
+    getUser();
+  }, [token]);
 
   const ProfileItem = ({ icon, label, value }) => (
     <View className="flex-row items-center bg-white p-4 rounded-xl mb-4 shadow-sm">
@@ -66,12 +71,12 @@ const Profile = () => {
         </Text>
       </View>
     </View>
-  )
+  );
 
   return (
     <SafeAreaView className="flex-1 bg-gray-50">
       <TitleHeader name="Profile" />
-      
+
       {loading ? (
         <Loader />
       ) : (
@@ -109,7 +114,7 @@ const Profile = () => {
           </View>
 
           {/* Skills Section */}
-          <View className="bg-white rounded-2xl p-4 shadow-sm">
+          <View className="bg-white rounded-2xl p-4 mb-4 shadow-sm">
             <Text className="text-lg font-pbold text-gray-900 mb-4">Skills</Text>
             <View className="flex-row flex-wrap">
               {user?.skills?.split(',').map((skill, index) => (
@@ -119,18 +124,47 @@ const Profile = () => {
                 >
                   <Text className="text-blue-600 font-medium">{skill.trim()}</Text>
                 </View>
-              )) || (
-                <Text className="text-gray-500">No skills listed</Text>
+              )) || <Text className="text-gray-500">No skills listed</Text>}
+            </View>
+          </View>
+
+          {/* Working Hours Section */}
+          <View className="bg-white rounded-2xl p-4 shadow-sm">
+            <Text className="text-lg font-pbold text-gray-900 mb-4">
+              Working Hours
+            </Text>
+            <View>
+              {user?.working_hours ? (
+                Object.entries(user.working_hours).map(([day, hours], index) => (
+                  <View
+                    key={index}
+                    className="flex-row justify-between items-center mb-2"
+                  >
+                    <Text className="text-gray-500 font-pmedium">{day}</Text>
+                    <Text className="text-gray-900 font-psemibold">
+                      {hours || 'N/A'}
+                    </Text>
+                  </View>
+                ))
+              ) : (
+                <Text className="text-gray-500">No working hours listed</Text>
               )}
             </View>
           </View>
 
           {/* Edit Profile Button */}
-         
+          <TouchableOpacity
+          onPress={() => router.push('/editProfile')}
+            className="bg-blue-500 py-3 rounded-xl mt-8"
+          >
+              <Text className="text-white text-center text-lg font-psemibold">
+                Edit Profile
+              </Text>
+          </TouchableOpacity>
         </ScrollView>
       )}
     </SafeAreaView>
-  )
-}
+  );
+};
 
-export default Profile
+export default Profile;

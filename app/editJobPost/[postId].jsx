@@ -5,7 +5,6 @@ import TitleHeader from '../../components/header';
 import FormField from '../../components/FormField';
 import api from '../../api/api';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import DateTimePicker from '@react-native-community/datetimepicker';
 import { ALERT_TYPE, Toast } from 'react-native-alert-notification';
 import { useLocalSearchParams, router } from 'expo-router';
 
@@ -14,14 +13,12 @@ const EditJobPosting = () => {
     const jobId = postId;
     const [loading, setLoading] = useState(false);
     const [token, setToken] = useState(null);
-    const [showStartPicker, setShowStartPicker] = useState(false);
-    const [showEndPicker, setShowEndPicker] = useState(false);
 
     const [form, setForm] = useState({
         jobTitle: '',
         jobDescription: '',
-        shiftStart: new Date(),
-        shiftEnd: new Date(),
+        shiftStart: '',
+        shiftEnd: '',
         salary: '',
         location: '',
         skillsRequired: ''
@@ -46,8 +43,8 @@ const EditJobPosting = () => {
             setForm({
                 jobTitle: job.job_title,
                 jobDescription: job.job_description,
-                shiftStart: new Date(job.shift_start),
-                shiftEnd: new Date(job.shift_end),
+                shiftStart:job.shift_start,
+                shiftEnd:job.shift_end,
                 salary: job.salary,
                 location: job.location,
                 skillsRequired: job.skills_required
@@ -73,19 +70,6 @@ const EditJobPosting = () => {
         }
     }, [token]);
 
-    const handleStartDateChange = (event, selectedDate) => {
-        setShowStartPicker(Platform.OS === 'ios');
-        if (selectedDate) {
-            setForm(prev => ({ ...prev, shiftStart: selectedDate }));
-        }
-    };
-
-    const handleEndDateChange = (event, selectedDate) => {
-        setShowEndPicker(Platform.OS === 'ios');
-        if (selectedDate) {
-            setForm(prev => ({ ...prev, shiftEnd: selectedDate }));
-        }
-    };
 
     const handleSubmit = async () => {
         if (form.jobTitle.length < 1 || form.jobDescription.length < 1 || form.salary.length < 1 || form.location.length < 1 || form.skillsRequired.length < 1) {
@@ -101,8 +85,8 @@ const EditJobPosting = () => {
             const response = await api.put(`/job_post/job/${jobId}`, {
                 job_title: form.jobTitle,
                 job_description: form.jobDescription,
-                shift_start: form.shiftStart.toISOString(),
-                shift_end: form.shiftEnd.toISOString(),
+                shift_start: form.shiftStart,
+                shift_end: form.shiftEnd,
                 salary: form.salary,
                 location: form.location,
                 skills_required: form.skillsRequired,
@@ -129,15 +113,6 @@ const EditJobPosting = () => {
         setLoading(false);
     };
 
-    const formatDate = (date) => {
-        return date.toLocaleString('en-US', {
-            year: 'numeric',
-            month: 'long',
-            day: 'numeric',
-            hour: '2-digit',
-            minute: '2-digit'
-        });
-    };
 
     if (loading) {
         return (
@@ -177,43 +152,23 @@ const EditJobPosting = () => {
                     {/* Shift Start */}
                     <View className="bg-white rounded-lg p-4 shadow-sm mb-4">
                         <Text className="text-lg font-bold mb-2">Shift Starts</Text>
-                        <TouchableOpacity
-                            className="border border-gray-300 rounded-lg p-3"
-                            onPress={() => setShowStartPicker(true)}
-                        >
-                            <Text>{formatDate(form.shiftStart)}</Text>
-                        </TouchableOpacity>
-                        {showStartPicker && (
-                            <DateTimePicker
-                                testID="startDateTimePicker"
-                                value={form.shiftStart}
-                                mode="datetime"
-                                is24Hour={true}
-                                display={Platform.OS === 'ios' ? 'spinner' : 'default'}
-                                onChange={handleStartDateChange}
-                            />
-                        )}
+                        <FormField
+                            title="Shift Starts"
+                            placeholder="Enter Shift Start"
+                            value={form.shiftStart}
+                            handleChangeText={(e) => setForm(prev => ({ ...prev, shiftStart: e }))}
+                        />
                     </View>
 
                     {/* Shift End */}
                     <View className="bg-white rounded-lg p-4 shadow-sm mb-4">
                         <Text className="text-lg font-bold mb-2">Shift Ends</Text>
-                        <TouchableOpacity
-                            className="border border-gray-300 rounded-lg p-3"
-                            onPress={() => setShowEndPicker(true)}
-                        >
-                            <Text>{formatDate(form.shiftEnd)}</Text>
-                        </TouchableOpacity>
-                        {showEndPicker && (
-                            <DateTimePicker
-                                testID="endDateTimePicker"
-                                value={form.shiftEnd}
-                                mode="datetime"
-                                is24Hour={true}
-                                display={Platform.OS === 'ios' ? 'spinner' : 'default'}
-                                onChange={handleEndDateChange}
-                            />
-                        )}
+                        <FormField
+                            title="Shift Ends"
+                            placeholder="Enter Shift End"
+                            value={form.shiftEnd}
+                            handleChangeText={(e) => setForm(prev => ({ ...prev, shiftEnd: e }))}
+                        />
                     </View>
 
                     {/* Salary */}

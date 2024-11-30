@@ -24,8 +24,17 @@ const SignUp = () => {
     age: '',
     skills: '',
     location: '',
-    is_student: ''
-  })
+    is_student: '',
+    workingHours: {
+      Monday: '',
+      Tuesday: '',
+      Wednesday: '',
+      Thursday: '',
+      Friday: '',
+      Saturday: '',
+      Sunday: '',
+    },
+  }); // State for managing form 
   const [selectedValue, setSelectedValue] = React.useState('option1');
 
   const mediaUpload = async () => {
@@ -52,6 +61,13 @@ const SignUp = () => {
     reader.readAsDataURL(file); // This triggers the `onload`
   }
 
+  const handleWorkingHoursChange = (day, value) => {
+    setForm((prevForm) => ({
+      ...prevForm,
+      workingHours: { ...prevForm.workingHours, [day]: value },
+    }));
+  }; // Function to handle changes in working hours
+  
   const handleConvert = async (image) => {
     if (image) {
       const response = await fetch(image.uri);
@@ -74,6 +90,7 @@ const SignUp = () => {
       location: form.location,
       is_student: selectedValue === 'yes' ? true : false,
       id_proof: form.thumbnailBase64,
+      working_hours: form.workingHours
     }
 
     console.log(form.name, 'form.name', form.email, 'form.email', form.phone, 'form.phone', form.password, 'form.password', form.age, 'form.age', form.skills, 'form.skills', form.location, 'form.location', selectedValue)
@@ -250,7 +267,7 @@ const SignUp = () => {
               <FormField title="Retype Password" placeholder="Retype Password" value={form.retypePassword} handleChangeText={(e) => setForm({ ...form, retypePassword: e })} />
             </View>
           }
-          {step == 4 && <View>
+          {step == 5 && <View>
             <FormField title="Age" placeholder="Age" value={form.age} handleChangeText={(e) => setForm({ ...form, age: e })} />
             <FormField title="Skills" placeholder="Skills" value={form.skills} handleChangeText={(e) => setForm({ ...form, skills: e })} />
             <Text className="text-black-200 mt-4 text-lg p-2 font-pmedium">
@@ -298,7 +315,7 @@ const SignUp = () => {
           </View>
           }
           {
-            step == 3 && <View>
+            step == 4 && <View>
               <Text className="text-black-200 mt-4 text-lg p-2 font-pmedium">
                 Upload your ID Proof              </Text>
 
@@ -322,12 +339,26 @@ const SignUp = () => {
             </View>
           }
 
-          
+          {step === 3 && (
+            <View>
+              {['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'].map((day) => (
+                <View key={day} className="mb-4">
+                  <Text className="text-black-200 mb-2">{`${day} Working Hours`}</Text>
+                  <TextInput
+                    className="border px-3 py-2 rounded-lg text-black"
+                    placeholder="e.g., 9 AM - 5 PM"
+                    value={form.workingHours[day]}
+                    onChangeText={(value) => handleWorkingHoursChange(day, value)}
+                  />
+                </View>
+              ))}
+            </View>
+          )}
           <View className="flex flex-row justify-between pt-4 items-center">
             {step !== 1 && <TouchableOpacity onPress={() => setStep(step - 1)} className="border py-2 px-8 rounded-lg" >
               <Text className="text-black text-[14px] font-pmedium">Back</Text>
             </TouchableOpacity>}
-            {step !== 4 && <TouchableOpacity onPress={() => setStep(step + 1)} className="bg-blue-500 px-8 py-2 rounded-lg" >
+            {step !== 5 && <TouchableOpacity onPress={() => setStep(step + 1)} className="bg-blue-500 px-8 py-2 rounded-lg" >
               <Text className="text-white text-[14px] font-pmedium">Next</Text>
             </TouchableOpacity>}
 
