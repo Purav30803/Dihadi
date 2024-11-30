@@ -1,6 +1,7 @@
 import { View, Text } from 'react-native'
 import React from 'react'
 import { Stack } from 'expo-router'
+import { StyleSheet } from 'react-native';
 import { StatusBar } from 'expo-status-bar'
 
 const AuthLayout = () => {

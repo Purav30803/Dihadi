@@ -9,7 +9,7 @@ const FormField = ({ title, value, placeholder, handleChangeText, otherStyles, .
     return (
         <View className={`${otherStyles}`}>
             {/* <Text className="text-base text-black-100 font-pmedium">{title}</Text> */}
-            <View className="flex-row px-4 mt-4 py-2 h-14 justify-between items-center flex bg-white border border-gray-200 rounded-lg focus:border-blue-300 border-2">
+            <View className="flex-row px-4 mt-4 py-2 h-16 justify-between items-center flex bg-white border border-gray-200 rounded-lg focus:border-blue-300 border-2">
                 
                 <TextInput
                     keyboardType={title === 'Email' ? 'email-address' : title === "Phone" ? 'phone-pad' : (title === "Age" || title === "OTP" )? 'numeric': 'default'}
@@ -17,7 +17,7 @@ const FormField = ({ title, value, placeholder, handleChangeText, otherStyles, .
                     placeholder={placeholder}
                     value={value}
                     onChangeText={handleChangeText}
-                    className="w-full h-full text-base flex-1 font-pregular text-primary"
+                    className="w-full text-base flex-1 font-pregular text-primary"
                     placeholderTextColor="#7b7b8b"
                     secureTextEntry={(title === 'Password' || title === 'Retype Password') && !showPassword ? true : false}
                 />

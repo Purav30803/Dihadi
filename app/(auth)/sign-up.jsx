@@ -321,6 +321,8 @@ const SignUp = () => {
               </TouchableOpacity>
             </View>
           }
+
+          
           <View className="flex flex-row justify-between pt-4 items-center">
             {step !== 1 && <TouchableOpacity onPress={() => setStep(step - 1)} className="border py-2 px-8 rounded-lg" >
               <Text className="text-black text-[14px] font-pmedium">Back</Text>

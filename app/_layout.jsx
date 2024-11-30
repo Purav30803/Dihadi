@@ -4,6 +4,8 @@ import React, { useEffect } from 'react'
 import { useFonts } from 'expo-font'
 import { StatusBar } from 'expo-status-bar';
 import { AlertNotificationRoot } from 'react-native-alert-notification';
+import 'nativewind'; // Add this import
+
 SplashScreen.preventAutoHideAsync();
 
 const RootLayout = () => {
