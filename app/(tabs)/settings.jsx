@@ -33,6 +33,12 @@ const Settings = () => {
                         redirect="/document"
                         description="Manage your documents"
                     />
+                    <MenuItem 
+                        title="Applied Jobs" 
+                        icon="briefcase"
+                        redirect="/appliedJobs"
+                        description="View your applied jobs"
+                    />
                 </View>
 
                 {/* System Section */}

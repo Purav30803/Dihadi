@@ -90,7 +90,8 @@ const SignUp = () => {
       location: form.location,
       is_student: selectedValue === 'yes' ? true : false,
       id_proof: form.thumbnailBase64,
-      working_hours: form.workingHours
+      working_hours: form.workingHours,
+      applied_jobs: []
     }
 
     console.log(form.name, 'form.name', form.email, 'form.email', form.phone, 'form.phone', form.password, 'form.password', form.age, 'form.age', form.skills, 'form.skills', form.location, 'form.location', selectedValue)

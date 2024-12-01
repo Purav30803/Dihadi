@@ -62,8 +62,8 @@ const MyJobs = () => {
     >
       <View className="flex-row justify-between items-start">
         <View className="flex-1">
-          <Text className="text-xl font-pbold text-gray-900">{job.job_title}</Text>
-          <Text className="text-base text-gray-500 mt-1 font-pregular leading-5" numberOfLines={2}>
+          <Text className="text-xl font-pbold text-gray-900 truncate "numberOfLines={1}>{job.job_title}</Text>
+          <Text className="text-base text-gray-500 mt-1 font-pregular leading-5 truncate max-w-full" numberOfLines={1} >
             {job.job_description}
           </Text>
         </View>

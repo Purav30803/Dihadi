@@ -57,11 +57,9 @@ const Home = () => {
   console.log('Posts:', posts);
   // Function to handle Apply button
   const handleApply = async (jobId) => {
-    alert(jobId);
     try {
-      const response = await api.post(
-        '/application/apply',
-        { post_id: jobId}, // Sending job ID as post_id
+      const response = await api.get(
+        `/application/apply?post_id=${jobId}`, // API endpoint to apply for a job
         {
           headers: {
             Authorization: `Bearer ${token}`, // Include the user's token

@@ -20,6 +20,10 @@ const PageLAyout = () => {
         <Stack.Screen name="jobPost" options={{
           headerShown: false
         }}/>
+      
+        <Stack.Screen name="appliedJobs" options={{
+          headerShown: false
+        }}/>
         <Stack.Screen name="[jobPosting]" options={{
           headerShown: false
         }}/>

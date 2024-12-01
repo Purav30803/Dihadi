@@ -35,6 +35,7 @@ const JobPosting = () => {
                     Authorization: `Bearer ${token}`,
                 },
             });
+            console.log(response.data);
             setJob(response.data);
         } catch (err) {
             console.log(err.response?.data || err.message);
@@ -70,7 +71,7 @@ const JobPosting = () => {
             setDeleteLoading(false);
         }
     };
-    
+
     const onRefresh = async () => {
         setRefreshing(true)
         getJob()
@@ -105,12 +106,33 @@ const JobPosting = () => {
     }
 
     return (
-        <SafeAreaView className="min-h-screen  bg-gray-50">
+        <SafeAreaView className="min-h-screen  bg-gray-50 ">
             <TitleHeader name="Job Details" />
             <ScrollView className="flex-1 p-4"
                 refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
 
             >
+                <View className="flex-row justify-center gap-x-4 pb-12">
+                    {/* Edit Button */}
+                    <TouchableOpacity
+                        onPress={() => router.push(`/editJobPost/${job.id}`)}
+                        className="bg-blue-500 flex-1 py-3 rounded-lg flex-row items-center justify-center shadow-md"
+                    >
+                        <MaterialIcons name="edit" size={20} color="#ffffff" />
+                        <Text className="text-white text-lg font-psemibold ml-2">Edit Job</Text>
+                    </TouchableOpacity>
+
+                    {/* Delete Button */}
+                    <TouchableOpacity
+                        onPress={() => deleteJobPost(job.id)}
+                        className="bg-red-500 flex-1 py-3 rounded-lg flex-row items-center justify-center shadow-md"
+                    >
+                        {deleteLoading ? <ActivityIndicator size="small" color="#fff" /> : <><MaterialIcons name="delete" size={20} color="#ffffff" />
+                            <Text className="text-white text-lg font-psemibold ml-2">Delete Job</Text></>}
+                    </TouchableOpacity>
+                </View>
+
+
                 <View className="bg-white rounded-lg p-6 mb-4">
                     <Text className="text-2xl font-pbold text-gray-900">{job.job_title}</Text>
                     <Text className="text-sm font-pregular text-gray-500 mt-1">{job.status}</Text>
@@ -149,27 +171,48 @@ const JobPosting = () => {
                         ))}
                     </View>
                 </View>
+                <View className="bg-white rounded-lg shadow-md p-4 mt-4 mb-8">
+
+                    <Text className="text-lg font-psemibold text-gray-800 mb-4">Applications ({job?.applications?.length})</Text>
+                    {job?.applications?.length > 0 ? (
+                        job.applications.map((application, index) => (
+                            <Link href={`/users/${application.id}`} key={index}>
+                                <View
+                                    key={index}
+                                    className="bg-white rounded-lg shadow-md p-4 mb-4 border border-gray-100 w-full"
+                                >
+                                    <View className="flex-row justify-between items-center mb-2">
+                                        <Text className="text-md font-psemibold text-gray-800 flex-1">
+                                            {application.name}
+                                        </Text>
+                                        <MaterialIcons name="person" size={20} color="#6B7280" />
+                                    </View>
+                                    <View className="flex-row items-center mb-1 gap-x-2">
+                                        <MaterialIcons name="email" size={16} color="#6B7280" className="mr-2" />
+                                        <Text className="text-sm font-pregular truncate text-gray-600 flex-1">
+                                            {application.email}
+                                        </Text>
+                                    </View>
+                                    <View className="flex-row items-center gap-x-2">
+                                        <MaterialIcons name="phone" size={16} color="#6B7280" className="mr-2" />
+                                        <Text className="text-sm text-gray-600 font-pregular flex-1">
+                                            {application.phone}
+                                        </Text>
+                                    </View>
+                                </View>
+                            </Link>
+                        ))
+                    ) : (
+                        <View className="bg-gray-50 rounded-lg p-4 items-center">
+                            <MaterialIcons name="inbox" size={40} color="#9CA3AF" />
+                            <Text className="text-gray-500 text-center mt-2">
+                                No applications yet
+                            </Text>
+                        </View>
+                    )}
+                </View>
 
                 {/* add edit button */}
-                <View className="flex-row justify-center mt-6 gap-x-4">
-                    {/* Edit Button */}
-                    <TouchableOpacity
-                        onPress={() => router.push(`/editJobPost/${job.id}`)}
-                        className="bg-blue-500 flex-1 py-3 rounded-lg flex-row items-center justify-center shadow-md"
-                    >
-                        <MaterialIcons name="edit" size={20} color="#ffffff" />
-                        <Text className="text-white text-lg font-psemibold ml-2">Edit Job</Text>
-                    </TouchableOpacity>
-
-                    {/* Delete Button */}
-                    <TouchableOpacity
-                        onPress={() => deleteJobPost(job.id)}
-                        className="bg-red-500 flex-1 py-3 rounded-lg flex-row items-center justify-center shadow-md"
-                    >
-                        {deleteLoading ? <ActivityIndicator size="small" color="#fff" /> : <><MaterialIcons name="delete" size={20} color="#ffffff" />
-                            <Text className="text-white text-lg font-psemibold ml-2">Delete Job</Text></>}
-                    </TouchableOpacity>
-                </View>
 
             </ScrollView>
         </SafeAreaView>
