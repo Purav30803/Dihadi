@@ -181,7 +181,7 @@ const JobPosting = () => {
                     <Text className="text-lg font-psemibold text-gray-800 mb-4">Applications ({job?.applications?.length})</Text>
                     {job?.applications?.length > 0 ? (
                         job.applications.map((application, index) => (
-                            <Link href={`/users/${application.id}`} key={index}>
+                            <Link href={`/users/${application.id}`} key={index} className='mt-4'>
                                 <View
                                     key={index}
                                     className="bg-white rounded-lg shadow-md p-4 mb-4 border border-gray-100 w-full"
