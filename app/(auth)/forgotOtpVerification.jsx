@@ -7,7 +7,7 @@ import { router } from 'expo-router';
 import { ALERT_TYPE, Toast } from 'react-native-alert-notification';
 import { ActivityIndicator } from 'react-native-paper';
 
-const OtpVerification = () => {
+const ForgotOtpVerification = () => {
   const [email, setEmail] = useState('');
   const [otp, setOtp] = useState('');
   const [loading, setLoading] = useState(false);
@@ -40,6 +40,8 @@ const OtpVerification = () => {
     getEmail();
   }, []);
 
+
+
   // Handle OTP submission
   const handleSubmit = async () => {
     if (!otp) {
@@ -60,14 +62,16 @@ const OtpVerification = () => {
     }
     setLoading(true);
     try {
-      const response = await api.get(`/users/verify?email=${email}&otp=${otp}`);
+      const response = await api.get(`/users/forgot-password/verify?email=${email}&otp=${otp}`);
       if (response?.data?.status_code === 200) {
         Toast.show({
           type: ALERT_TYPE.SUCCESS,
           title: 'Success',
           textBody: 'OTP Verified Successfully',
         });
-        router.push('/sign-in');
+        await AsyncStorage.setItem('email', email)
+
+        router.push('/reset-password');
       }
     } catch (err) {
       Toast.show({
@@ -75,8 +79,8 @@ const OtpVerification = () => {
         title: 'Error',
         textBody: 'Invalid OTP. Please try again.',
       });
-      setLoading(false);
     }
+    setLoading(false);
   };
 
   return (
@@ -104,7 +108,7 @@ const OtpVerification = () => {
           onPress={handleSubmit}
         >
           <Text className="text-white text-center text-lg font-pbold">
-            {
+          {
               loading ? <ActivityIndicator size="small" color='#fff'/> : 'Verify'
             }
           </Text>
@@ -116,4 +120,4 @@ const OtpVerification = () => {
   );
 };
 
-export default OtpVerification;
+export default ForgotOtpVerification;

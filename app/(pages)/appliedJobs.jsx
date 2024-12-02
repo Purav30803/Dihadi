@@ -6,6 +6,9 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Feather } from '@expo/vector-icons';
 import TitleHeader from '../../components/header';
+import { ActivityIndicator } from 'react-native';
+import Loader from '../../components/Loader';
+import timestamp_to_date from '../../components/timestamp';
 
 const AppliedJobs = () => {
 
@@ -25,7 +28,7 @@ const AppliedJobs = () => {
 
 
     const fetchJobs = async () => {
-        // alert(token)
+
         setLoading(true);
         try {
             const response = await api.get('/users/jobs/applied', {
@@ -33,9 +36,10 @@ const AppliedJobs = () => {
                     Authorization: `Bearer ${token}`,
                 },
             });
+            console.log(response.data.jobs+"applied jobs");
             setJobs(response.data.jobs);
         } catch (err) {
-            console.log(err.response.data);
+            console.log(err);
             setLoading(false);
         }
         setLoading(false);
@@ -87,23 +91,29 @@ const AppliedJobs = () => {
             <Feather name="dollar-sign" size={16} color="#6B7280" />
             <Text className="text-gray-600 font-pregular ml-2">{job.salary}</Text>
           </View>
+          <View className="mt-3 flex-row items-center">
+            <Feather name="calendar" size={16} color="#6B7280" />
+            <Text className="text-gray-600 font-pregular ml-2">{timestamp_to_date(job.timestamp)}</Text>
+          </View>
         </TouchableOpacity>
       );
   return (
     <SafeAreaView className="flex-1 bg-gray-50">
     <TitleHeader name="Applied Jobs" />
-
+   
     <ScrollView
       contentContainerStyle={{ padding: 16 }}
       refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
     >
-      {jobs.length === 0 ? (
+      
+      {jobs?.length === 0 ? (
         <View className="flex-1 justify-center items-center mt-10">
           <Feather name="briefcase" size={48} color="#9CA3AF" />
           <Text className="text-center text-xl text-gray-500 mt-4">You didn't Applied anywhere</Text>
         </View>
       ) : (
-        jobs.map((job) => <JobCard key={job.id} job={job} />)
+       
+        jobs?.map((job) => <JobCard key={job.id} job={job} />)
       )}
     </ScrollView>
 

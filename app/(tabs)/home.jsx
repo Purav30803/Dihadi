@@ -7,12 +7,14 @@ import { Feather } from '@expo/vector-icons';
 import TitleHeader from '../../components/header';
 import { Link } from 'expo-router';
 import { ALERT_TYPE, Toast } from 'react-native-alert-notification';
+import { ActivityIndicator } from 'react-native-paper';
 
 const Home = () => {
   const [posts, setPosts] = useState([]);
   const [token, setToken] = useState();
   const [searchQuery, setSearchQuery] = useState('');
   const [debouncedQuery, setDebouncedQuery] = useState('');
+  const [loading, setLoading] = useState(false);
 
   const getTokenAndUserId = async () => {
     const token = await AsyncStorage.getItem('token');
@@ -57,6 +59,7 @@ const Home = () => {
   console.log('Posts:', posts);
   // Function to handle Apply button
   const handleApply = async (jobId) => {
+    setLoading(true);
     try {
       const response = await api.get(
         `/application/apply?post_id=${jobId}`, // API endpoint to apply for a job
@@ -99,6 +102,7 @@ const Home = () => {
         });
       }
     }
+    setLoading(false);
   };
 
   const renderJobCard = ({ item }) => (
@@ -145,7 +149,10 @@ const Home = () => {
         className="mt-4 bg-blue-500 py-2 px-4 rounded-lg"
         onPress={() => handleApply(item?.id)}
       >
-        <Text className="text-white text-center font-pbold">Apply</Text>
+        <Text className="text-white text-center font-pbold">
+
+          {loading ? <ActivityIndicator size="small" color="#fff" /> : 'Apply'}
+        </Text>
       </TouchableOpacity>
     </View>
   );
@@ -155,7 +162,7 @@ const Home = () => {
       <View className="flex-row justify-between items-center">
         <TitleHeader name="Dihadi" />
         <View className="flex-row gap-x-4 -mt-2">
-          <View className="mr-4 border py-2 px-3 rounded-full">
+          <View className="mr-4 border py-2 px-6 rounded-full">
             <Link href="/jobPost">
               <Text>Post a Job</Text>
             </Link>

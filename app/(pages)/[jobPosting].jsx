@@ -9,6 +9,7 @@ import TitleHeader from '../../components/header';
 import { RefreshControl } from 'react-native';
 import { TouchableOpacity } from 'react-native';
 import { ALERT_TYPE, Toast } from 'react-native-alert-notification';
+import timestamp_to_date from '../../components/timestamp';
 
 const JobPosting = () => {
     const { jobPosting } = useLocalSearchParams();
@@ -158,6 +159,10 @@ const JobPosting = () => {
                     <View className="flex-row items-center mb-2">
                         <MaterialIcons name="location-on" size={20} color="#6B7280" />
                         <Text className="text-sm text-gray-600 font-pregular ml-2">{job.location}</Text>
+                    </View>
+                    <View className="flex-row items-center mb-2">
+                        <MaterialIcons name="calendar-month" size={20} color="#6B7280" />
+                        <Text className="text-sm text-gray-600 font-pregular ml-2">{timestamp_to_date(job.timestamp)}</Text>
                     </View>
                 </View>
 
