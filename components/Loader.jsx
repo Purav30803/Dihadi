@@ -4,7 +4,7 @@ import { ActivityIndicator } from 'react-native-paper'
 
 const Loader = () => {
   return (
-    <View className="min-h-[60vh] items-center w-full justify-center"><ActivityIndicator size="medium" color='#FF9C01' /></View>
+    <View className="min-h-[60vh] items-center w-full justify-center"><ActivityIndicator size="medium" color='#000000' /></View>
   )
 }
 

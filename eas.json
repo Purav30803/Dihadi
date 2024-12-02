@@ -30,7 +30,7 @@
       },
       "android": {
         "buildType": "apk"  
-      }
+        }
     },
     "production": {
       "ios": {

@@ -39,6 +39,12 @@ const Settings = () => {
                         redirect="/appliedJobs"
                         description="View your applied jobs"
                     />
+                    <MenuItem 
+                        title="Reset Password" 
+                        icon="key"
+                        redirect="/resetPasswordUser"
+                        description="Reset your password"
+                    />
                 </View>
 
                 {/* System Section */}

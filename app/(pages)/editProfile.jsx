@@ -110,6 +110,20 @@ import {
         });
         return;
       }
+      const workingHoursRegex = /^([0-1]?[0-9]|2[0-3]):[0-5][0-9] - ([0-1]?[0-9]|2[0-3]):[0-5][0-9]$/;
+
+      if (
+        Object.values(form.working_hours).some((value) => value.trim() !== "") && // Check if any value is non-empty
+        !Object.values(form.working_hours).every((value) => value.trim() === "" || workingHoursRegex.test(value)) // Validate only non-empty values
+      ) {
+        Toast.show({
+          type: ALERT_TYPE.DANGER,
+          title: 'Error',
+          textBody: 'Invalid working hours format. Please enter in HH:MM - HH:MM format.'
+        });
+        return;
+      }
+      
       setLoading(true);
       try {
         console.log('Updating profile:', form);

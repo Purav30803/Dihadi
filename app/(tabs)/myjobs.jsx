@@ -7,6 +7,7 @@ import { Feather } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
 import TitleHeader from '../../components/header';
 import { router } from 'expo-router';
+import timestamp_to_date from '../../components/timestamp';
 
 const MyJobs = () => {
   const [jobs, setJobs] = useState([]);
@@ -55,6 +56,8 @@ const MyJobs = () => {
     router.push(`/(pages)/${id}`);
   };
 
+
+
   const JobCard = ({ job }) => (
     <TouchableOpacity
       onPress={() => handleRouting(job?.id)}
@@ -62,7 +65,7 @@ const MyJobs = () => {
     >
       <View className="flex-row justify-between items-start">
         <View className="flex-1">
-          <Text className="text-xl font-pbold text-gray-900 truncate "numberOfLines={1}>{job.job_title}</Text>
+          <Text className="text-xl font-pbold text-gray-900 truncate " numberOfLines={1}>{job.job_title}</Text>
           <Text className="text-base text-gray-500 mt-1 font-pregular leading-5 truncate max-w-full" numberOfLines={1} >
             {job.job_description}
           </Text>
@@ -80,7 +83,7 @@ const MyJobs = () => {
       <View className="mt-3 flex-row items-center">
         <Feather name="clock" size={16} color="#6B7280" />
         <Text className="text-gray-600 text-sm ml-2 font-pregular">
-          {job.shift_start} 
+          {job.shift_start}
           {' - '}
           {job.shift_end}
         </Text>
@@ -90,6 +93,17 @@ const MyJobs = () => {
         <Feather name="dollar-sign" size={16} color="#6B7280" />
         <Text className="text-gray-600 font-pregular ml-2">{job.salary}</Text>
       </View>
+
+      <View className="mt-3 flex-row items-center justify-between">
+        <View className="flex-row items-center">
+          <Feather name="calendar" size={16} color="#6B7280" />
+          <Text className="text-gray-600 font-pregular ml-2">Date Uploaded</Text>
+        </View>
+        <Text className="text-gray-600 font-pregular">{timestamp_to_date(job.timestamp)}</Text>
+      </View>
+
+
+
     </TouchableOpacity>
   );
 

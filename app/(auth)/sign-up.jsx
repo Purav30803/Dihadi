@@ -1,4 +1,4 @@
-import { View, Text, TextInput, TouchableOpacity, Image, ActivityIndicator } from 'react-native'
+import { View, Text, TextInput, TouchableOpacity, Image, ActivityIndicator, Keyboard } from 'react-native'
 import React from 'react'
 import FormField from '../../components/FormField'
 import { Link } from 'expo-router'
@@ -6,7 +6,7 @@ import * as ImagePicker from 'expo-image-picker'
 import api from '../../api/api'
 import { router } from 'expo-router'
 import { Toast, ALERT_TYPE, Dialog } from 'react-native-alert-notification';
-import { RadioButton } from 'react-native-paper'
+import { Checkbox, RadioButton } from 'react-native-paper'
 import AsyncStorage from '@react-native-async-storage/async-storage'
 
 
@@ -36,6 +36,15 @@ const SignUp = () => {
     },
   }); // State for managing form 
   const [selectedValue, setSelectedValue] = React.useState('option1');
+  const [originalWorkingHours, setOriginalWorkingHours] = React.useState({
+    Monday: '',
+    Tuesday: '',
+    Wednesday: '',
+    Thursday: '',
+    Friday: '',
+    Saturday: '',
+    Sunday: '',
+  });
 
   const mediaUpload = async () => {
     const result = await ImagePicker.launchImageLibraryAsync({
@@ -79,6 +88,13 @@ const SignUp = () => {
   const files = form.thumbnail ? [form.thumbnail] : []
   const finalImage = handleConvert(files[0])
 
+  const updatePhone = (phone) => {
+    if (phone.length === 10) {
+      Keyboard.dismiss();
+    }
+    setForm({ ...form, phone })
+   
+  }
   const handleSubmit = async () => {
     const submitForm = {
       name: form.name,
@@ -106,6 +122,26 @@ const SignUp = () => {
       setStep(1)
       return
     }
+
+    // working hours validation
+
+
+    // check the format of the working hours
+    const workingHoursRegex = /^([0-1]?[0-9]|2[0-3]):[0-5][0-9] - ([0-1]?[0-9]|2[0-3]):[0-5][0-9]$/;
+
+if (
+  Object.values(submitForm.working_hours).some((value) => value.trim() !== "") && // Check if any value is non-empty
+  !Object.values(submitForm.working_hours).every((value) => value.trim() === "" || workingHoursRegex.test(value)) // Validate only non-empty values
+) {
+  Dialog.show({
+    type: ALERT_TYPE.DANGER,
+    title: 'Error',
+    textBody: 'Invalid working hours format',
+    button: 'Ok',
+  });
+  setStep(3);
+  return;
+}
 
     // email validation regex
     const emailRegex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}$/
@@ -246,6 +282,36 @@ const SignUp = () => {
     // console.log(form)
   }
 
+  const makeAllDaysSame = () => {
+    const isSame = Object.values(form.workingHours).every(
+      (val) => val === Object.values(form.workingHours)[0]
+    );
+  
+    if (!isSame) {
+      // Save original working hours if not already saved
+      setOriginalWorkingHours({ ...form.workingHours });
+  
+      // Set all days to the same value (default: Monday's hours or empty)
+      const workingHours = form.workingHours.Monday || '';
+      setForm((prevForm) => ({
+        ...prevForm,
+        workingHours: Object.keys(prevForm.workingHours).reduce(
+          (acc, day) => ({
+            ...acc,
+            [day]: workingHours,
+          }),
+          {}
+        ),
+      }));
+    } else {
+      // Restore original working hours when unchecked
+      setForm((prevForm) => ({
+        ...prevForm,
+        workingHours: { ...originalWorkingHours },
+      }));
+    }
+  };
+
   return (
     <View className="p-6 flex items-c enter justify-center w-full min-h-screen">
       <View className="w-full px-4">
@@ -259,7 +325,7 @@ const SignUp = () => {
           {step == 1 && <View>
             <FormField title="Name" placeholder="Name" value={form.name} handleChangeText={(e) => setForm({ ...form, name: e })} />
             <FormField title="Email" placeholder="Email" value={form.email} handleChangeText={(e) => setForm({ ...form, email: e })} />
-            <FormField title="Phone" placeholder="Phone" value={form.phone} handleChangeText={(e) => setForm({ ...form, phone: e })} />
+            <FormField title="Phone" placeholder="Phone" value={form.phone} handleChangeText={(e) => updatePhone(e)} />
           </View>}
 
           {step == 2 &&
@@ -340,21 +406,51 @@ const SignUp = () => {
             </View>
           }
 
-          {step === 3 && (
-            <View>
-              {['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'].map((day) => (
-                <View key={day} className="mb-4">
-                  <Text className="text-black-200 mb-2">{`${day} Working Hours`}</Text>
-                  <TextInput
-                    className="border px-3 py-2 rounded-lg text-black"
-                    placeholder="e.g., 9 AM - 5 PM"
-                    value={form.workingHours[day]}
-                    onChangeText={(value) => handleWorkingHoursChange(day, value)}
-                  />
-                </View>
-              ))}
-            </View>
-          )}
+{step === 3 && (
+  <View className="space-y-4">
+    <View className="flex-row items-center justify-between mb-4">
+      <Text className="text-lg font-psemibold text-primary">Working Hours</Text>
+      <TouchableOpacity 
+        onPress={makeAllDaysSame} 
+        className="flex-row items-center bg-blue-50 px-3 py-2 rounded-lg"
+      >
+        <Checkbox.Android
+          value="same-hours"
+          status={Object.values(form.workingHours).every(val => val === Object.values(form.workingHours)[0]) ? 'checked' : 'unchecked'}
+          onPress={makeAllDaysSame}
+          color="#007BFF"
+        />
+        <Text className="text-blue-600 ml-2">Same for all days</Text>
+      </TouchableOpacity>
+      
+    </View>
+    
+    <View className="bg-white rounded-lg shadow-sm border border-gray-100">
+      {['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'].map((day) => (
+        <View 
+          key={day} 
+          className="flex-row items-center justify-between px-4 py-3 border-b border-gray-100 last:border-b-0"
+        >
+          <Text className="text-base font-pmedium text-gray-700">{day}</Text>
+          <View className="flex-row items-center">
+            <TextInput
+              className="border border-gray-200 px-3 py-2 rounded-lg w-48 text-black"
+              placeholder="e.g., 9:00 - 17:00"
+              value={form.workingHours[day]}
+              onChangeText={(value) => handleWorkingHoursChange(day, value)}
+            />
+          </View>
+        </View>
+      ))}
+    </View>
+    
+    <View className="bg-blue-50 p-3 rounded-lg">
+      <Text className="text-blue-700 text-sm font-pregular">
+        ⓘ Format: Start time - End time (24-hour format, e.g., 09:00 - 17:00)
+      </Text>
+    </View>
+  </View>
+)}
           <View className="flex flex-row justify-between pt-4 items-center">
             {step !== 1 && <TouchableOpacity onPress={() => setStep(step - 1)} className="border py-2 px-8 rounded-lg" >
               <Text className="text-black text-[14px] font-pmedium">Back</Text>

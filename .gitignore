@@ -13,8 +13,9 @@ web-build/
 *.jks
 *.p8
 *.p12
-*.key
-*.mobileprovision
+*.key*.mobileprovision
+
+
 
 # Metro
 .metro-health-check*

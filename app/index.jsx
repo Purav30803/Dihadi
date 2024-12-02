@@ -10,13 +10,14 @@ import checkToken from '../components/checkToken';
 import { useEffect } from 'react';
 export default function App() {
     const token = checkToken(); 
-    if(token){
+    if(token?.legth > 1){
        return <Redirect href="/home"/>
     }
-   
+
 
   return (
-   <SafeAreaView className="bg-primary h-full">       
+   <SafeAreaView className="bg-primary h-full"> 
+         
         <ScrollView contentContainerStyle={{height:"100%"}}>
             <View className="w-full justify-center items-center min-h-[85vh] px-2">
                 <Image source={logo} className="w-[190px] h-[84px]" resizeMode='contain'/>
@@ -28,7 +29,7 @@ export default function App() {
                     </Text>
                     {/* <Image source={images.path} className="w-[136px] h-[15px] absolute -bottom-2 -right-8" resizeMode='contain'/>                     */}
                 </View>
-                <CustomButton title="Continue with Email" handlePress={()=>router.push('/sign-in')} containerStyles="w-[80%] mt-7"/>
+                <CustomButton title="Continue with Email" handlePress={()=>router.push('/sign-in')} containerStyles="w-[80%] mt-7" textStyles="text-white"/>
             </View>
         </ScrollView>
         <StatusBar backgroundColor='#161622' style='light' />

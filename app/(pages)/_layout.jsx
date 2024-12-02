@@ -27,6 +27,9 @@ const PageLAyout = () => {
         <Stack.Screen name="[jobPosting]" options={{
           headerShown: false
         }}/>
+        <Stack.Screen name="resetPasswordUser" options={{
+          headerShown: false
+        }}/>
       
       </Stack>
 
