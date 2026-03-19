@@ -270,10 +270,16 @@ if (
       // go back to login page
     }
     catch (e) {
+      console.log(e?.response?.data || e?.message || e)
+      const message =
+        e?.response?.data?.detail ||
+        e?.response?.data?.message ||
+        e?.message ||
+        'Something went wrong. Please try again.'
       Toast.show({
         type: ALERT_TYPE.DANGER,
         title: 'Error',
-        textBody: e.response.data.detail,
+        textBody: message,
       })
       setLoading(false)
     }

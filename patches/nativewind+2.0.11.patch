@@ -1,0 +1,62 @@
+diff --git a/node_modules/nativewind/dist/postcss/extract-styles.js b/node_modules/nativewind/dist/postcss/extract-styles.js
+index 2af8d00..c89b39b 100644
+--- a/node_modules/nativewind/dist/postcss/extract-styles.js
++++ b/node_modules/nativewind/dist/postcss/extract-styles.js
+@@ -4,6 +4,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
+ };
+ Object.defineProperty(exports, "__esModule", { value: true });
+ exports.extractStyles = void 0;
++const node_child_process_1 = require("node:child_process");
+ const postcss_1 = __importDefault(require("postcss"));
+ const tailwindcss_1 = __importDefault(require("tailwindcss"));
+ const postcss_2 = __importDefault(require("../postcss"));
+@@ -29,7 +30,48 @@ function extractStyles(tailwindConfig, cssInput = "@tailwind components;@tailwin
+             },
+         }),
+     ];
+-    (0, postcss_1.default)(plugins).process(cssInput).css;
++    // Babel/Metro transforms are synchronous, but Tailwind's PostCSS plugin is async.
++    // Run the PostCSS pipeline in a separate Node process and block on it.
++    const payload = Buffer.from(JSON.stringify({ tailwindConfig, cssInput }), "utf8").toString("base64");
++    const childResultRaw = (0, node_child_process_1.execFileSync)(process.execPath, [
++        "-e",
++        `
++const postcss = require("postcss");
++const tailwindcss = require("tailwindcss");
++const nativewindPostcss = require("nativewind/dist/postcss").default || require("nativewind/dist/postcss");
++
++const payload = JSON.parse(Buffer.from(process.env.NW_EXTRACT_PAYLOAD, "base64").toString("utf8"));
++let errors = [];
++let output = {};
++const plugins = [
++  tailwindcss(payload.tailwindConfig),
++  nativewindPostcss({
++    ...payload.tailwindConfig,
++    done: ({ errors: resultErrors, ...result }) => {
++      output = result;
++      errors = resultErrors;
++    },
++  }),
++];
++
++postcss(plugins)
++  .process(payload.cssInput, { from: undefined })
++  .then(() => {
++    process.stdout.write(JSON.stringify({ output, errors }));
++  })
++  .catch((e) => {
++    process.stderr.write(String(e && e.stack ? e.stack : e));
++    process.exitCode = 1;
++  });
++`,
++    ], {
++        env: { ...process.env, NW_EXTRACT_PAYLOAD: payload },
++        encoding: "utf8",
++        stdio: ["ignore", "pipe", "pipe"],
++    });
++    const childParsed = JSON.parse(childResultRaw);
++    output = childParsed.output;
++    errors = childParsed.errors || [];
+     return {
+         ...(0, serialize_1.serializer)(output),
+         errors,

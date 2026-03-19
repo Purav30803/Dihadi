@@ -44,7 +44,6 @@ const SignIn = () => {
         title: 'Error',
         textBody: 'Invalid email',
       })
-      setStep(1)
       return
     }
     setLoading(true)
@@ -71,11 +70,16 @@ const SignIn = () => {
 
     }
     catch (err) {
-      console.log(err.response.data)
+      console.log(err?.response?.data || err?.message || err)
+      const message =
+        err?.response?.data?.detail ||
+        err?.response?.data?.message ||
+        err?.message ||
+        'Something went wrong. Please try again.'
       Toast.show({
         type: ALERT_TYPE.DANGER,
         title: 'Error',
-        textBody: err.response.data.detail,
+        textBody: message,
       })
     }
     setLoading(false)
