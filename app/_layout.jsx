@@ -1,10 +1,10 @@
-import { SafeAreaView, StyleSheet, Text, View } from 'react-native'
+import { StyleSheet } from 'react-native'
 import { Slot, SplashScreen, Stack } from 'expo-router'
 import React, { useEffect } from 'react'
 import { useFonts } from 'expo-font'
-import { StatusBar } from 'expo-status-bar';
 import { AlertNotificationRoot } from 'react-native-alert-notification';
-import 'nativewind'; // Add this import
+import 'nativewind';
+import { ThemeProvider } from '../context/ThemeContext';
 
 SplashScreen.preventAutoHideAsync();
 
@@ -29,19 +29,18 @@ const RootLayout = () => {
     }, [fontsLoaded, error])
     if (!fontsLoaded && !error) return null
     return (
-        <AlertNotificationRoot>
-        <Stack>
-
-            <Stack.Screen name='index' options={{ headerShown: false }} />
-            <Stack.Screen name='(tabs)' options={{ headerShown: false }} />
-            <Stack.Screen name='(auth)' options={{ headerShown: false }} />
-            <Stack.Screen name='(pages)' options={{ headerShown: false }} />
-            <Stack.Screen name='editJobPost' options={{ headerShown: false }} />
-            <Stack.Screen name='users' options={{ headerShown: false }} />
-
-
-        </Stack>
-        </AlertNotificationRoot>
+        <ThemeProvider>
+            <AlertNotificationRoot>
+                <Stack>
+                    <Stack.Screen name='index' options={{ headerShown: false }} />
+                    <Stack.Screen name='(tabs)' options={{ headerShown: false }} />
+                    <Stack.Screen name='(auth)' options={{ headerShown: false }} />
+                    <Stack.Screen name='(pages)' options={{ headerShown: false }} />
+                    <Stack.Screen name='editJobPost' options={{ headerShown: false }} />
+                    <Stack.Screen name='users' options={{ headerShown: false }} />
+                </Stack>
+            </AlertNotificationRoot>
+        </ThemeProvider>
     )
 }
 

@@ -4,32 +4,29 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import api from '../../api/api';
 import { Feather } from '@expo/vector-icons';
-import { useNavigation } from '@react-navigation/native';
 import TitleHeader from '../../components/header';
 import { router } from 'expo-router';
 import timestamp_to_date from '../../components/timestamp';
+import { useTheme } from '../../context/ThemeContext';
+import { StatusBar } from 'expo-status-bar';
 
 const MyJobs = () => {
   const [jobs, setJobs] = useState([]);
   const [loading, setLoading] = useState(false);
   const [token, setToken] = useState(null);
   const [refreshing, setRefreshing] = useState(false);
-  const navigation = useNavigation();
+  const { colors, isDark } = useTheme();
 
   const getToken = async () => {
     const storedToken = await AsyncStorage.getItem('token');
-    if (storedToken) {
-      setToken(JSON.parse(storedToken));
-    }
+    if (storedToken) setToken(JSON.parse(storedToken));
   };
 
   const getJobs = async () => {
     setLoading(true);
     try {
       const response = await api.get('/job_post/my_jobs', {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
+        headers: { Authorization: `Bearer ${token}` },
       });
       setJobs(response?.data || []);
     } catch (err) {
@@ -47,98 +44,154 @@ const MyJobs = () => {
 
   useEffect(() => {
     getToken();
-    if (token) {
-      getJobs();
-    }
+    if (token) getJobs();
   }, [token]);
 
   const handleRouting = (id) => {
     router.push(`/(pages)/${id}`);
   };
 
-
+  const StatusBadge = ({ status }) => {
+    const isActive = status === 'Active';
+    return (
+      <View style={{
+        backgroundColor: isActive ? colors.greenMuted : colors.redMuted,
+        borderRadius: 100,
+        paddingHorizontal: 10,
+        paddingVertical: 4,
+      }}>
+        <Text style={{
+          fontSize: 12,
+          fontFamily: 'Poppins-SemiBold',
+          color: isActive ? colors.green : colors.red,
+        }}>
+          {status}
+        </Text>
+      </View>
+    );
+  };
 
   const JobCard = ({ job }) => (
     <TouchableOpacity
       onPress={() => handleRouting(job?.id)}
-      className="bg-white rounded-2xl shadow-2xl border p-6 mb-4 border-gray-100"
+      activeOpacity={0.85}
+      style={{
+        backgroundColor: colors.surface,
+        borderRadius: 20,
+        padding: 20,
+        marginBottom: 16,
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: 2 },
+        shadowOpacity: isDark ? 0 : 0.06,
+        shadowRadius: 12,
+        elevation: isDark ? 0 : 3,
+        borderWidth: isDark ? 0.5 : 0,
+        borderColor: colors.separator,
+      }}
     >
-      <View className="flex-row justify-between items-start">
-        <View className="flex-1">
-          <Text className="text-xl font-pbold text-gray-900 truncate " numberOfLines={1}>{job.job_title}</Text>
-          <Text className="text-base text-gray-500 mt-1 font-pregular leading-5 truncate max-w-full" numberOfLines={1} >
+      <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 6 }}>
+        <View style={{ flex: 1, marginRight: 12 }}>
+          <Text style={{ fontSize: 17, fontFamily: 'Poppins-Bold', color: colors.label }} numberOfLines={1}>
+            {job.job_title}
+          </Text>
+          <Text style={{ fontSize: 13, fontFamily: 'Poppins-Regular', color: colors.labelSecondary, marginTop: 2 }} numberOfLines={1}>
             {job.job_description}
           </Text>
         </View>
-        <View className={`rounded-full px-3 py-1 ${job.status === 'Active' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}`}>
-          <Text className="text-xs font-medium">{job.status}</Text>
+        <StatusBadge status={job.status} />
+      </View>
+
+      <View style={{ height: 1, backgroundColor: colors.separator, marginVertical: 12 }} />
+
+      <View style={{ gap: 8 }}>
+        <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8 }}>
+          <Feather name="map-pin" size={14} color={colors.labelTertiary} />
+          <Text style={{ fontSize: 13, fontFamily: 'Poppins-Regular', color: colors.labelSecondary }}>{job.location}</Text>
+        </View>
+        <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8 }}>
+          <Feather name="clock" size={14} color={colors.labelTertiary} />
+          <Text style={{ fontSize: 13, fontFamily: 'Poppins-Regular', color: colors.labelSecondary }}>
+            {job.shift_start} – {job.shift_end}
+          </Text>
+        </View>
+        <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8 }}>
+          <Feather name="dollar-sign" size={14} color={colors.labelTertiary} />
+          <Text style={{ fontSize: 13, fontFamily: 'Poppins-SemiBold', color: colors.primary }}>{job.salary}</Text>
+        </View>
+        <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
+          <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8 }}>
+            <Feather name="calendar" size={14} color={colors.labelTertiary} />
+            <Text style={{ fontSize: 12, fontFamily: 'Poppins-Regular', color: colors.labelTertiary }}>Posted</Text>
+          </View>
+          <Text style={{ fontSize: 12, fontFamily: 'Poppins-Regular', color: colors.labelTertiary }}>
+            {timestamp_to_date(job.timestamp)}
+          </Text>
         </View>
       </View>
-
-      <View className="mt-4 flex-row items-center">
-        <Feather name="map-pin" size={16} color="#6B7280" />
-        <Text className="text-gray-600 font-pregular ml-2">{job.location}</Text>
-      </View>
-
-      <View className="mt-3 flex-row items-center">
-        <Feather name="clock" size={16} color="#6B7280" />
-        <Text className="text-gray-600 text-sm ml-2 font-pregular">
-          {job.shift_start}
-          {' - '}
-          {job.shift_end}
-        </Text>
-      </View>
-
-      <View className="mt-3 flex-row items-center">
-        <Feather name="dollar-sign" size={16} color="#6B7280" />
-        <Text className="text-gray-600 font-pregular ml-2">{job.salary}</Text>
-      </View>
-
-      <View className="mt-3 flex-row items-center justify-between">
-        <View className="flex-row items-center">
-          <Feather name="calendar" size={16} color="#6B7280" />
-          <Text className="text-gray-600 font-pregular ml-2">Date Uploaded</Text>
-        </View>
-        <Text className="text-gray-600 font-pregular">{timestamp_to_date(job.timestamp)}</Text>
-      </View>
-
-
-
     </TouchableOpacity>
   );
 
   if (loading) {
     return (
-      <SafeAreaView className="flex-1 justify-center items-center">
-        <ActivityIndicator size="large" color="#3B82F6" />
+      <SafeAreaView style={{ flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: colors.background }}>
+        <ActivityIndicator size="large" color={colors.primary} />
       </SafeAreaView>
     );
   }
 
   return (
-    <SafeAreaView className="flex-1 bg-gray-50">
+    <SafeAreaView style={{ flex: 1, backgroundColor: colors.background }}>
+      <StatusBar style={isDark ? 'light' : 'dark'} />
       <TitleHeader name="Posted Jobs" />
 
       <ScrollView
-        contentContainerStyle={{ padding: 16 }}
-        refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
+        contentContainerStyle={{ paddingHorizontal: 20, paddingBottom: 120 }}
+        refreshControl={
+          <RefreshControl
+            refreshing={refreshing}
+            onRefresh={onRefresh}
+            tintColor={colors.primary}
+          />
+        }
+        showsVerticalScrollIndicator={false}
       >
         {jobs.length === 0 ? (
-          <View className="flex-1 justify-center items-center mt-10">
-            <Feather name="briefcase" size={48} color="#9CA3AF" />
-            <Text className="text-center text-xl text-gray-500 mt-4">You have no job postings.</Text>
+          <View style={{ alignItems: 'center', marginTop: 60 }}>
+            <Feather name="briefcase" size={52} color={colors.labelTertiary} />
+            <Text style={{ fontSize: 18, fontFamily: 'Poppins-SemiBold', color: colors.label, marginTop: 16 }}>
+              No job postings yet
+            </Text>
+            <Text style={{ fontSize: 14, fontFamily: 'Poppins-Regular', color: colors.labelSecondary, marginTop: 6, textAlign: 'center' }}>
+              Tap the button below to create your first job posting
+            </Text>
           </View>
         ) : (
           jobs.map((job) => <JobCard key={job.id} job={job} />)
         )}
       </ScrollView>
 
-      <TouchableOpacity
-        onPress={() => router.push('jobPost')}
-        className="bg-blue-600 py-3 rounded-full mx-4 mb-6"
-      >
-        <Text className="text-center text-white text-lg font-psemibold">Post a New Job</Text>
-      </TouchableOpacity>
+      {/* Post Job Button */}
+      <View style={{ position: 'absolute', bottom: 20, left: 20, right: 20 }}>
+        <TouchableOpacity
+          onPress={() => router.push('jobPost')}
+          activeOpacity={0.85}
+          style={{
+            backgroundColor: colors.primary,
+            paddingVertical: 16,
+            borderRadius: 16,
+            alignItems: 'center',
+            shadowColor: colors.primary,
+            shadowOffset: { width: 0, height: 6 },
+            shadowOpacity: 0.35,
+            shadowRadius: 12,
+            elevation: 6,
+          }}
+        >
+          <Text style={{ color: '#fff', fontFamily: 'Poppins-SemiBold', fontSize: 16 }}>
+            + Post a New Job
+          </Text>
+        </TouchableOpacity>
+      </View>
     </SafeAreaView>
   );
 };
