@@ -1,13 +1,13 @@
-import { View, Text, FlatList, TextInput, TouchableOpacity, Alert } from 'react-native';
+import { View, Text, FlatList, TextInput, TouchableOpacity, ActivityIndicator } from 'react-native';
 import React, { useEffect, useState } from 'react';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import api from '../../api/api';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Feather } from '@expo/vector-icons';
-import TitleHeader from '../../components/header';
 import { Link } from 'expo-router';
 import { ALERT_TYPE, Toast } from 'react-native-alert-notification';
-import { ActivityIndicator } from 'react-native-paper';
+import { useTheme } from '../../context/ThemeContext';
+import { StatusBar } from 'expo-status-bar';
 
 const Home = () => {
   const [posts, setPosts] = useState([]);
@@ -15,21 +15,18 @@ const Home = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [debouncedQuery, setDebouncedQuery] = useState('');
   const [loading, setLoading] = useState(false);
+  const [applyingId, setApplyingId] = useState(null);
+  const { colors, isDark } = useTheme();
 
   const getTokenAndUserId = async () => {
     const token = await AsyncStorage.getItem('token');
-    if (token) {
-      setToken(JSON.parse(token));
-    }
-   
+    if (token) setToken(JSON.parse(token));
   };
 
   const getSearch = async () => {
     try {
       const response = await api.get(`/job_post/jobs?search=${debouncedQuery}`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
+        headers: { Authorization: `Bearer ${token}` },
       });
       setPosts(response.data);
     } catch (error) {
@@ -43,164 +40,212 @@ const Home = () => {
   }, [token]);
 
   useEffect(() => {
-    const handler = setTimeout(() => {
-      setDebouncedQuery(searchQuery);
-    }, 1000);
-
-    return () => {
-      clearTimeout(handler);
-    };
+    const handler = setTimeout(() => setDebouncedQuery(searchQuery), 800);
+    return () => clearTimeout(handler);
   }, [searchQuery]);
 
   useEffect(() => {
     if (token) getSearch();
   }, [debouncedQuery, token]);
 
-  console.log('Posts:', posts);
-  // Function to handle Apply button
   const handleApply = async (jobId) => {
-    setLoading(true);
+    setApplyingId(jobId);
     try {
-      const response = await api.get(
-        `/application/apply?post_id=${jobId}`, // API endpoint to apply for a job
-        {
-          headers: {
-            Authorization: `Bearer ${token}`, // Include the user's token
-          },
-        }
-      );
-  
-      console.log('Apply response:', response.data);
-  
-      // Show success notification
-      Toast.show({
-        type: ALERT_TYPE.SUCCESS,
-        title: 'Success',
-        textBody: 'You have successfully applied for the job.',
+      await api.get(`/application/apply?post_id=${jobId}`, {
+        headers: { Authorization: `Bearer ${token}` },
       });
+      Toast.show({ type: ALERT_TYPE.SUCCESS, title: 'Applied!', textBody: 'Application submitted successfully.' });
     } catch (error) {
-      console.error('Apply error:', error.response || error.message);
-  
-      // Handle specific errors and show appropriate alerts
       if (error.response?.status === 400) {
-        Toast.show({
-          type: ALERT_TYPE.WARNING,
-          title: 'Duplicate Application',
-          textBody: 'You have already applied for this job.',
-        });
+        Toast.show({ type: ALERT_TYPE.WARNING, title: 'Already Applied', textBody: 'You already applied for this job.' });
       } else if (error.response?.status === 401) {
-        Toast.show({
-          type: ALERT_TYPE.DANGER,
-          title: 'Authentication Failed',
-          textBody: 'Your session has expired. Please log in again.',
-        });
+        Toast.show({ type: ALERT_TYPE.DANGER, title: 'Session Expired', textBody: 'Please log in again.' });
       } else {
-        Toast.show({
-          type: ALERT_TYPE.DANGER,
-          title: 'Error',
-          textBody: 'Failed to apply for the job. Please try again.',
-        });
+        Toast.show({ type: ALERT_TYPE.DANGER, title: 'Error', textBody: 'Failed to apply. Please try again.' });
       }
     }
-    setLoading(false);
+    setApplyingId(null);
   };
 
-  const renderJobCard = ({ item }) => (
-    <View className="bg-white rounded-2xl shadow-2xl border p-6 mb-4 border-gray-100">
-      <View className="flex-row justify-between items-start">
-        <View className="flex-1">
-          <Text className="text-xl font-pbold text-gray-900">{item.job_title}</Text>
-          <Text className="text-base text-gray-500 mt-1 font-pregular leading-5" numberOfLines={2}>
-            {item.job_description}
+  const JobCard = ({ item }) => (
+    <View style={{
+      backgroundColor: colors.surface,
+      borderRadius: 20,
+      padding: 20,
+      marginBottom: 16,
+      shadowColor: '#000',
+      shadowOffset: { width: 0, height: 2 },
+      shadowOpacity: isDark ? 0 : 0.06,
+      shadowRadius: 12,
+      elevation: isDark ? 0 : 3,
+      borderWidth: isDark ? 0.5 : 0,
+      borderColor: colors.separator,
+    }}>
+      {/* Title & Description */}
+      <Text style={{ fontSize: 18, fontFamily: 'Poppins-Bold', color: colors.label, marginBottom: 4 }}>
+        {item.job_title}
+      </Text>
+      <Text style={{ fontSize: 14, fontFamily: 'Poppins-Regular', color: colors.labelSecondary, lineHeight: 20, marginBottom: 14 }} numberOfLines={2}>
+        {item.job_description}
+      </Text>
+
+      {/* Meta row */}
+      <View style={{ flexDirection: 'row', gap: 16, marginBottom: 10 }}>
+        <View style={{ flexDirection: 'row', alignItems: 'center', gap: 5 }}>
+          <Feather name="map-pin" size={13} color={colors.labelTertiary} />
+          <Text style={{ fontSize: 13, fontFamily: 'Poppins-Regular', color: colors.labelTertiary }}>{item.location}</Text>
+        </View>
+        <View style={{ flexDirection: 'row', alignItems: 'center', gap: 5 }}>
+          <Feather name="clock" size={13} color={colors.labelTertiary} />
+          <Text style={{ fontSize: 13, fontFamily: 'Poppins-Regular', color: colors.labelTertiary }}>
+            {item.shift_start} – {item.shift_end}
           </Text>
         </View>
       </View>
 
-      <View className="mt-4 flex-row items-center">
-        <View className="items-center flex-row flex-1">
-          <Feather name="map-pin" size={16} color="#6B7280" />
-          <Text className="text-gray-600 font-pregular ml-2">{item.location}</Text>
-        </View>
-      </View>
-      <View className="mt-4 flex-row items-center">
-        <Text className="text-blue-600 font-psemibold"> {item.salary}</Text>
-      </View>
+      {/* Salary */}
+      <Text style={{ fontSize: 17, fontFamily: 'Poppins-SemiBold', color: colors.primary, marginBottom: 12 }}>
+        {item.salary}
+      </Text>
 
-      <View className="mt-3 pt-3 border-t border-gray-100">
-        <Text className="text-gray-600 text-sm mb-2 font-pregular">Required Skills:</Text>
-        <View className="flex-row flex-wrap">
-          {item.skills_required.split(',').map((skill, index) => (
-            <View key={index} className="bg-blue-50 rounded-full px-3 py-1 mr-2 mb-2">
-              <Text className="text-xs text-blue-500 font-pregular">{skill.trim()}</Text>
-            </View>
-          ))}
-        </View>
-      </View>
-
-      <View className="mt-3 flex-row items-center">
-        <Feather name="clock" size={16} color="#6B7280" />
-        <Text className="text-gray-600 text-sm ml-2 font-pregular">
-          {item.shift_start} {'-'} {item.shift_end}
-        </Text>
+      {/* Skills */}
+      <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 6, marginBottom: 16 }}>
+        {item.skills_required.split(',').map((skill, index) => (
+          <View key={index} style={{
+            backgroundColor: colors.pillBg,
+            borderRadius: 100,
+            paddingHorizontal: 12,
+            paddingVertical: 5,
+          }}>
+            <Text style={{ fontSize: 12, fontFamily: 'Poppins-Regular', color: colors.pillText }}>
+              {skill.trim()}
+            </Text>
+          </View>
+        ))}
       </View>
 
       {/* Apply Button */}
       <TouchableOpacity
-        className="mt-4 bg-blue-500 py-2 px-4 rounded-lg"
         onPress={() => handleApply(item?.id)}
+        activeOpacity={0.85}
+        style={{
+          backgroundColor: colors.primary,
+          borderRadius: 12,
+          paddingVertical: 13,
+          alignItems: 'center',
+          justifyContent: 'center',
+        }}
       >
-        <Text className="text-white text-center font-pbold">
-
-          {loading ? <ActivityIndicator size="small" color="#fff" /> : 'Apply'}
-        </Text>
+        {applyingId === item?.id ? (
+          <ActivityIndicator size="small" color="#fff" />
+        ) : (
+          <Text style={{ color: '#fff', fontFamily: 'Poppins-SemiBold', fontSize: 15 }}>Apply Now</Text>
+        )}
       </TouchableOpacity>
     </View>
   );
 
   return (
-    <SafeAreaView className="flex-1 bg-gray-50">
-      <View className="flex-row justify-between items-center">
-        <TitleHeader name="Dihadi" />
-        <View className="flex-row gap-x-4 -mt-2">
-          <View className="mr-4 border py-2 px-6 rounded-full">
-            <Link href="/jobPost">
-              <Text>Post a Job</Text>
-            </Link>
-          </View>
-        </View>
+    <SafeAreaView style={{ flex: 1, backgroundColor: colors.background }}>
+      <StatusBar style={isDark ? 'light' : 'dark'} />
+
+      {/* Header */}
+      <View style={{ flexDirection: 'row', alignItems: 'center', paddingHorizontal: 20, paddingTop: 8, paddingBottom: 4 }}>
+        <Text style={{ flex: 1, fontSize: 28, fontFamily: 'Heading', color: colors.label }}>Dihadi</Text>
+        <Link href="/jobPost" asChild>
+          <TouchableOpacity
+            activeOpacity={0.8}
+            style={{
+              backgroundColor: colors.primary,
+              paddingHorizontal: 16,
+              paddingVertical: 8,
+              borderRadius: 20,
+            }}
+          >
+            <Text style={{ color: '#fff', fontFamily: 'Poppins-SemiBold', fontSize: 13 }}>Post a Job</Text>
+          </TouchableOpacity>
+        </Link>
       </View>
-      <View className="px-4 shadow-sm">
-        <View className="flex-row items-center border border-gray-100 rounded-xl px-4 py-2">
-          <Feather name="search" size={20} color="#6B7280" />
+
+      {/* Search Bar */}
+      <View style={{ paddingHorizontal: 20, paddingVertical: 12 }}>
+        <View style={{
+          flexDirection: 'row',
+          alignItems: 'center',
+          backgroundColor: colors.surface,
+          borderRadius: 14,
+          paddingHorizontal: 14,
+          paddingVertical: 12,
+          borderWidth: 1,
+          borderColor: colors.separator,
+          shadowColor: '#000',
+          shadowOffset: { width: 0, height: 1 },
+          shadowOpacity: isDark ? 0 : 0.04,
+          shadowRadius: 4,
+        }}>
+          <Feather name="search" size={18} color={colors.labelTertiary} />
           <TextInput
-            className="flex-1 ml-2 text-base text-gray-900"
-            placeholder="Search jobs..."
-            placeholderTextColor="#9CA3AF"
+            style={{
+              flex: 1,
+              marginLeft: 10,
+              fontSize: 15,
+              fontFamily: 'Poppins-Regular',
+              color: colors.label,
+            }}
+            placeholder="Search jobs, skills, location..."
+            placeholderTextColor={colors.labelTertiary}
             value={searchQuery}
             onChangeText={setSearchQuery}
           />
+          {searchQuery.length > 0 && (
+            <TouchableOpacity onPress={() => setSearchQuery('')}>
+              <Feather name="x" size={16} color={colors.labelTertiary} />
+            </TouchableOpacity>
+          )}
         </View>
       </View>
 
+      {/* Job List */}
       <FlatList
         data={posts}
-        keyExtractor={(item) => item.id}
-        renderItem={renderJobCard}
-        contentContainerStyle={{ padding: 16 }}
+        keyExtractor={(item) => String(item.id)}
+        renderItem={({ item }) => <JobCard item={item} />}
+        contentContainerStyle={{ paddingHorizontal: 20, paddingBottom: 32 }}
+        showsVerticalScrollIndicator={false}
         ListEmptyComponent={
-          <View className="flex-1 justify-center items-center mt-10">
-            <Feather name="inbox" size={48} color="#9CA3AF" />
-            <Text className="text-gray-500 mt-4 text-lg">No jobs found</Text>
-            <Text className="text-gray-400 text-sm mt-1">Try adjusting your search</Text>
+          <View style={{ alignItems: 'center', marginTop: 60 }}>
+            <Feather name="inbox" size={52} color={colors.labelTertiary} />
+            <Text style={{ fontSize: 18, fontFamily: 'Poppins-SemiBold', color: colors.label, marginTop: 16 }}>
+              No jobs found
+            </Text>
+            <Text style={{ fontSize: 14, fontFamily: 'Poppins-Regular', color: colors.labelSecondary, marginTop: 6 }}>
+              Try different search terms
+            </Text>
           </View>
         }
       />
 
+      {/* Refresh FAB */}
       <TouchableOpacity
-        className="absolute bottom-10 right-10 bg-blue-600 rounded-full p-4 shadow-lg"
+        style={{
+          position: 'absolute',
+          bottom: 100,
+          right: 24,
+          width: 52,
+          height: 52,
+          borderRadius: 26,
+          backgroundColor: colors.primary,
+          alignItems: 'center',
+          justifyContent: 'center',
+          shadowColor: colors.primary,
+          shadowOffset: { width: 0, height: 4 },
+          shadowOpacity: 0.4,
+          shadowRadius: 10,
+          elevation: 6,
+        }}
         onPress={getSearch}
       >
-        <Feather name="refresh-cw" size={24} color="white" />
+        <Feather name="refresh-cw" size={20} color="white" />
       </TouchableOpacity>
     </SafeAreaView>
   );

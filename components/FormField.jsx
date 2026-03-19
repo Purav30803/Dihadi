@@ -1,41 +1,73 @@
-import { View, Text, TextInput, TouchableOpacity, Image } from 'react-native'
+import { View, Text, TextInput, TouchableOpacity } from 'react-native'
 import React, { useState } from 'react'
 import Icon from 'react-native-vector-icons/Ionicons';
-
-// import { icons } from '../constants'
+import { useTheme } from '../context/ThemeContext';
 
 const FormField = ({ title, value, placeholder, handleChangeText, otherStyles, ...props }) => {
-    const [showPassword, setShowPassword] = useState('')
+    const [showPassword, setShowPassword] = useState(false);
+    const [focused, setFocused] = useState(false);
+    const { colors } = useTheme();
+
+    const isPassword = title === 'Password' || title === 'Retype Password';
+    const isSearch = title === 'Search';
+
     return (
-        <View className={`${otherStyles}`}>
-            {/* <Text className="text-base text-black-100 font-pmedium">{title}</Text> */}
-            <View className="flex-row px-4 mt-4 py-2 h-16 justify-between items-center flex bg-white border border-gray-200 rounded-lg focus:border-blue-300 border-2">
-                
+        <View style={{ marginTop: 12 }} className={`${otherStyles}`}>
+            {title && !isSearch && (
+                <Text style={{ color: colors.labelSecondary, marginBottom: 6, fontSize: 13, fontFamily: 'Poppins-Medium' }}>
+                    {title}
+                </Text>
+            )}
+            <View
+                style={{
+                    flexDirection: 'row',
+                    alignItems: 'center',
+                    backgroundColor: colors.inputBg,
+                    borderWidth: 1.5,
+                    borderColor: focused ? colors.primary : colors.inputBorder,
+                    borderRadius: 12,
+                    paddingHorizontal: 16,
+                    height: 52,
+                }}
+            >
                 <TextInput
-                    keyboardType={title === 'Email' ? 'email-address' : title === "Phone" ? 'phone-pad' : (title === "Age" || title === "OTP" )? 'numeric': 'default'}
-                    autoCompleteType={title === 'Email' ? 'email' : title === 'Password' || title === 'Retype Password' ? 'password' : 'off'}
+                    keyboardType={
+                        title === 'Email' ? 'email-address'
+                        : title === 'Phone' ? 'phone-pad'
+                        : (title === 'Age' || title === 'OTP') ? 'numeric'
+                        : 'default'
+                    }
+                    autoComplete={
+                        title === 'Email' ? 'email'
+                        : isPassword ? 'password'
+                        : 'off'
+                    }
                     placeholder={placeholder}
                     value={value}
                     onChangeText={handleChangeText}
-                    className="w-full text-base flex-1 font-pregular text-primary"
-                    placeholderTextColor="#7b7b8b"
-                    secureTextEntry={(title === 'Password' || title === 'Retype Password') && !showPassword ? true : false}
+                    onFocus={() => setFocused(true)}
+                    onBlur={() => setFocused(false)}
+                    style={{
+                        flex: 1,
+                        fontSize: 16,
+                        fontFamily: 'Poppins-Regular',
+                        color: colors.label,
+                    }}
+                    placeholderTextColor={colors.labelTertiary}
+                    secureTextEntry={isPassword && !showPassword}
                 />
-                {
-                    (title === 'Password' || title === 'Retype Password') && (
-                        <TouchableOpacity onPress={() => setShowPassword(!showPassword)}>
-                            {!showPassword ? <Icon name="eye-outline" size={23} color="#000"/> :<Icon name='eye-off-outline' size={23} color="#000" />}
-                        </TouchableOpacity>
-                    )
-                }
-                {
-                    (title === 'Search') && (
-                        <TouchableOpacity>
-                            <Icon name="search" size={23} color="#000"/> 
-                        </TouchableOpacity>
-                    )
-                }
-                
+                {isPassword && (
+                    <TouchableOpacity onPress={() => setShowPassword(!showPassword)} style={{ padding: 4 }}>
+                        <Icon
+                            name={showPassword ? 'eye-outline' : 'eye-off-outline'}
+                            size={20}
+                            color={colors.labelSecondary}
+                        />
+                    </TouchableOpacity>
+                )}
+                {isSearch && (
+                    <Icon name="search" size={20} color={colors.labelTertiary} />
+                )}
             </View>
         </View>
     )

@@ -1,64 +1,86 @@
 import { View, Text } from 'react-native'
 import React from 'react'
-import {Tabs,Redirext} from 'expo-router';
-import {Image} from 'react-native';
+import { Tabs } from 'expo-router';
 import Icon from 'react-native-vector-icons/Octicons';
+import { useTheme } from '../../context/ThemeContext';
 
-const TabIcon = ({color,name,focused,title})=>(
-  <View className="items-center justify-center gap-2 mt-6 h-[30px]">
-    {/* <Image source={icon} resizeMode='contain' tintColor={color} className="w-4 h-4"/> */}
-    <View >
-
-    <Icon name={name} size={20} color={focused?"rgb(59 130 246)":"black"} />
+const TabIcon = ({ name, focused, title, colors }) => (
+  <View style={{ alignItems: 'center', justifyContent: 'center', paddingTop: 10, width: 72 }}>
+    <View style={{
+      width: 48,
+      height: 32,
+      borderRadius: 16,
+      backgroundColor: focused ? colors.primaryMuted : 'transparent',
+      alignItems: 'center',
+      justifyContent: 'center',
+    }}>
+      <Icon name={name} size={21} color={focused ? colors.primary : colors.labelTertiary} />
     </View>
-    <Text className={`text-xs w-full items-center flex  ${focused?'font-psemibold text-blue-500':'font-pregular'} `} >{title}</Text>
+    <Text style={{
+      fontSize: 10,
+      marginTop: 3,
+      fontFamily: focused ? 'Poppins-SemiBold' : 'Poppins-Regular',
+      color: focused ? colors.primary : colors.labelTertiary,
+    }}>
+      {title}
+    </Text>
   </View>
-)
+);
 
 const TabsLayout = () => {
-  return (
-   <>
-   <Tabs
-   
-   screenOptions={{
-    tabBarShowLabel:false,
-    tabBarActiveTintColor:"#000",
-    tabBarInactiveTintColor:"#4a4a4a",
-    tabBarStyle:{
-        backgroundColor:"#fff",
-        borderTopWidth:2,
-        borderTopColor:"#eee",
-        height:74
-    }
-   }}>
-    <Tabs.Screen name='home' options={{
-        title:'Home',
-        headerShown:false,
-        tabBarIcon:({color,focused})=>(
-            <TabIcon color={color} focused={focused} name='home' title="Home"/>
-        )
-    }}/>
-   
-       <Tabs.Screen name='myjobs' options={{
-        title:'Posted Jobs',
-        headerShown:false,
-        tabBarIcon:({color,focused})=>(
-            <TabIcon color={color} focused={focused} name='browser' title="Posted Jobs"/>
-        )
-    }}/>
-    <Tabs.Screen name='settings' options={{
-        title:'Settings',
-        headerShown:false,
-        tabBarIcon:({color,focused})=>(
-            <TabIcon color={color} focused={focused} name='gear' title="Settings"/>
-        )
-    }}/>
-   
- 
-    
-   </Tabs>
-   </>
-  )
-}
+  const { colors } = useTheme();
 
-export default TabsLayout
+  return (
+    <Tabs
+      screenOptions={{
+        tabBarShowLabel: false,
+        tabBarStyle: {
+          backgroundColor: colors.tabBar,
+          borderTopWidth: 0.5,
+          borderTopColor: colors.tabBarBorder,
+          height: 80,
+          paddingBottom: 16,
+          paddingTop: 4,
+          elevation: 0,
+          shadowColor: '#000',
+          shadowOffset: { width: 0, height: -1 },
+          shadowOpacity: 0.06,
+          shadowRadius: 8,
+        },
+      }}
+    >
+      <Tabs.Screen
+        name="home"
+        options={{
+          title: 'Home',
+          headerShown: false,
+          tabBarIcon: ({ focused }) => (
+            <TabIcon focused={focused} name="home" title="Home" colors={colors} />
+          ),
+        }}
+      />
+      <Tabs.Screen
+        name="myjobs"
+        options={{
+          title: 'My Jobs',
+          headerShown: false,
+          tabBarIcon: ({ focused }) => (
+            <TabIcon focused={focused} name="browser" title="My Jobs" colors={colors} />
+          ),
+        }}
+      />
+      <Tabs.Screen
+        name="settings"
+        options={{
+          title: 'Settings',
+          headerShown: false,
+          tabBarIcon: ({ focused }) => (
+            <TabIcon focused={focused} name="gear" title="Settings" colors={colors} />
+          ),
+        }}
+      />
+    </Tabs>
+  );
+};
+
+export default TabsLayout;

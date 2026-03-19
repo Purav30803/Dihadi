@@ -16,6 +16,19 @@ module.exports = {
         gray: {
           100: "#CDCDE0",
         },
+        ios: {
+          blue: "#007AFF",
+          blueDark: "#0A84FF",
+          red: "#FF3B30",
+          redDark: "#FF453A",
+          green: "#34C759",
+          greenDark: "#30D158",
+          orange: "#FF9500",
+          bg: "#F2F2F7",
+          surface: "#FFFFFF",
+          surfaceDark: "#1C1C1E",
+          elevated: "#2C2C2E",
+        },
       },
       fontFamily: {
         pthin: ["Poppins-Thin", "sans-serif"],
